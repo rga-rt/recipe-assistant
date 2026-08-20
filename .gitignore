@@ -1,6 +1,10 @@
 # Docs / design specs (kept out of the repo)
 docs/
 
+# Tooling scratch (kept out of the repo)
+.superpowers/
+.impeccable/
+
 # Dependencies
 node_modules/
 .pnp
