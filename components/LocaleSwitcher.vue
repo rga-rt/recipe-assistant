@@ -4,14 +4,14 @@
       v-for="loc in availableLocales"
       :key="loc.code"
       :to="switchLocalePath(loc.code as 'en' | 'es')"
-      class="rounded-md px-2.5 py-1 font-medium transition"
+      class="rounded-md px-2.5 py-1 font-mono text-xs font-bold uppercase tracking-wide transition"
       :class="
         loc.code === locale
           ? 'bg-kale text-chalk'
           : 'text-stone-600 hover:bg-stone-100'
       "
     >
-      {{ loc.name }}
+      {{ loc.code.toUpperCase() }}
     </NuxtLink>
   </div>
 </template>
