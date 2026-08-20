@@ -64,7 +64,8 @@
       "gallon": "galón", "gallons": "galones", "dozen": "docena",
       "packet": "sobre", "packets": "sobres", "kilogram": "kg", "kilograms": "kg",
       "milligram": "mg", "milligrams": "mg", "inch": "pulgada", "inches": "pulgadas",
-      "smalls": "pequeños"
+      "smalls": "pequeños",
+      "Tb": "cda", "Tbs": "cdas"
     }
   },
   "errors": {

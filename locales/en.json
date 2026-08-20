@@ -64,7 +64,8 @@
       "gallon": "gallon", "gallons": "gallons", "dozen": "dozen",
       "packet": "packet", "packets": "packets", "kilogram": "kg", "kilograms": "kg",
       "milligram": "mg", "milligrams": "mg", "inch": "inch", "inches": "inches",
-      "smalls": "small"
+      "smalls": "small",
+      "Tb": "tbsp", "Tbs": "tbsp"
     }
   },
   "errors": {
