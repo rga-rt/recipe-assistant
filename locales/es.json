@@ -1,21 +1,59 @@
 {
-  "nav": {
-    "home": "Inicio",
-    "recipes": "Recetas",
-    "about": "Acerca de"
+  "nav": { "home": "Inicio", "favorites": "Favoritos" },
+  "start": {
+    "title": "¿Qué puedes cocinar hoy?",
+    "subtitle": "Elige los ingredientes que tienes y obtén ideas de recetas.",
+    "cta": "Comenzar"
   },
-  "hero": {
-    "title": "Asistente de Recetas",
-    "subtitle": "Cocina algo delicioso, en inglés o español"
+  "select": {
+    "title": "Selecciona tus ingredientes",
+    "hint": "Elige uno o más ingredientes entre las categorías.",
+    "selectedCount": "{count} seleccionados",
+    "getRecipes": "Buscar recetas",
+    "clear": "Limpiar",
+    "back": "Atrás"
   },
-  "recipes": {
-    "title": "Recetas destacadas",
-    "noRecipesYet": "Sin recetas aún",
-    "minutes": "min",
-    "viewRecipe": "Ver receta"
+  "results": {
+    "title": "Recetas sugeridas",
+    "usesCount": "Usa {used} de tus ingredientes",
+    "missingCount": "{count} más necesarios",
+    "empty": "No se encontraron recetas. Prueba con otros o menos ingredientes.",
+    "newSearch": "Nueva búsqueda"
   },
-  "common": {
-    "loading": "Cargando...",
-    "error": "Algo salió mal"
+  "recipe": {
+    "readyIn": "Listo en {minutes} min",
+    "servings": "{count} porciones",
+    "ingredients": "Ingredientes",
+    "instructions": "Instrucciones",
+    "noInstructions": "No se proporcionaron instrucciones.",
+    "back": "Volver a resultados"
+  },
+  "favorites": {
+    "title": "Tus favoritos",
+    "empty": "Aún no hay favoritos. Toca el corazón en una receta para guardarla.",
+    "add": "Guardar en favoritos",
+    "remove": "Quitar de favoritos"
+  },
+  "units": {
+    "label": "Unidades",
+    "metric": "Métrico",
+    "imperial": "Imperial",
+    "words": {
+      "cup": "taza", "cups": "tazas", "tablespoon": "cda", "tablespoons": "cdas",
+      "teaspoon": "cdta", "teaspoons": "cdtas", "ounce": "oz", "ounces": "oz",
+      "pound": "lb", "pounds": "lb", "gram": "g", "grams": "g",
+      "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l"
+    }
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "quota": "El servicio de recetas está ocupado (límite diario). Inténtalo más tarde.",
+    "offline": "Estás sin conexión. La búsqueda y la traducción necesitan conexión — tus favoritos guardados siguen funcionando.",
+    "retry": "Reintentar"
+  },
+  "categories": {
+    "vegetables": "Verduras", "fruits": "Frutas", "proteins": "Proteínas",
+    "dairy-eggs": "Lácteos y Huevos", "grains-pasta": "Granos y Pasta",
+    "legumes": "Legumbres", "herbs-spices": "Hierbas y Especias", "pantry-oils": "Despensa y Aceites"
   }
 }
