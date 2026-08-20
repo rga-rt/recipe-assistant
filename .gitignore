@@ -1,3 +1,6 @@
+# Docs / design specs (kept out of the repo)
+docs/
+
 # Dependencies
 node_modules/
 .pnp
