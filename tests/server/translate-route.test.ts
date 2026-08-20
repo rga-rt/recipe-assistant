@@ -1,6 +1,7 @@
 // @vitest-environment node
 /* eslint-disable @typescript-eslint/no-explicit-any -- test doubles for h3/nuxt auto-imports */
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
+import { sha1 } from '~/server/utils/translation/provider';
 
 const hoisted = vi.hoisted(() => ({
   cache: {
@@ -10,7 +11,7 @@ const hoisted = vi.hoisted(() => ({
       for (const e of entries) hoisted.cache.store.set(e.key, e.value);
     }),
   },
-  provider: { translate: vi.fn(async (texts: string[]) => texts.map((t) => `ES:${t}`)) },
+  provider: { translate: vi.fn(async (texts: string[]) => texts.map((t) => `ES:${t}`) as (string | null)[]) },
 }));
 
 vi.stubGlobal('defineEventHandler', (fn: any) => fn);
@@ -53,6 +54,7 @@ describe('POST /api/translate', () => {
   beforeEach(() => {
     hoisted.cache.store.clear();
     hoisted.provider.translate.mockClear();
+    hoisted.cache.setMany.mockClear();
   });
 
   it('translates misses and caches them', async () => {
@@ -72,5 +74,31 @@ describe('POST /api/translate', () => {
   it('returns empty array for empty input', async () => {
     const res = await handler({ context: { body: { texts: [], target: 'es' } } } as any);
     expect(res).toEqual({ translations: [] });
+  });
+
+  it('handles a mix of cached hits and misses, calling the provider only for the miss', async () => {
+    await handler({ context: { body: { texts: ['Rice'], target: 'es' } } } as any);
+    hoisted.provider.translate.mockClear();
+
+    const res = await handler({ context: { body: { texts: ['Rice', 'Soup'], target: 'es' } } } as any);
+
+    expect(res).toEqual({ translations: ['ES:Rice', 'ES:Soup'] });
+    expect(hoisted.provider.translate).toHaveBeenCalledOnce();
+    expect(hoisted.provider.translate).toHaveBeenCalledWith(['Soup'], 'es');
+    expect(hoisted.cache.store.get(`${sha1('Soup')}:es`)).toBe('ES:Soup');
+  });
+
+  it('falls back to the original English text when the provider cannot translate, and does not cache it', async () => {
+    hoisted.provider.translate.mockImplementationOnce(async () => [null]);
+
+    const res = await handler({ context: { body: { texts: ['Rice'], target: 'es' } } } as any);
+
+    expect(res).toEqual({ translations: ['Rice'] });
+    const key = `${sha1('Rice')}:es`;
+    expect(hoisted.cache.store.has(key)).toBe(false);
+    const setManyCalls = hoisted.cache.setMany.mock.calls;
+    for (const [entries] of setManyCalls) {
+      expect((entries as { key: string }[]).some((e) => e.key === key)).toBe(false);
+    }
   });
 });

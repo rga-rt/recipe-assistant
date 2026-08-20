@@ -23,10 +23,15 @@ export default defineEventHandler(async (event) => {
     );
     const toCache: { key: string; value: string }[] = [];
     missIdx.forEach((i, j) => {
-      result[i] = translated[j];
-      toCache.push({ key: keys[i], value: translated[j] });
+      const t = translated[j];
+      if (t === null || t === undefined) {
+        result[i] = texts[i]; // couldn't translate; fall back to English, don't cache
+      } else {
+        result[i] = t;
+        toCache.push({ key: keys[i], value: t });
+      }
     });
-    await cache.setMany(toCache);
+    if (toCache.length) await cache.setMany(toCache);
   }
 
   return { translations: result };
