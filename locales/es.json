@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "recipes": "Recetas",
+    "about": "Acerca de"
+  },
+  "hero": {
+    "title": "Asistente de Recetas",
+    "subtitle": "Cocina algo delicioso, en inglés o español"
+  },
+  "recipes": {
+    "title": "Recetas destacadas",
+    "noRecipesYet": "Sin recetas aún",
+    "minutes": "min",
+    "viewRecipe": "Ver receta"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal"
+  }
+}

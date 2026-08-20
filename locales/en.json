@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "home": "Home",
+    "recipes": "Recipes",
+    "about": "About"
+  },
+  "hero": {
+    "title": "Recipe Assistant",
+    "subtitle": "Cook something great, in English or Spanish"
+  },
+  "recipes": {
+    "title": "Featured recipes",
+    "noRecipesYet": "No recipes yet",
+    "minutes": "min",
+    "viewRecipe": "View recipe"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  }
+}
