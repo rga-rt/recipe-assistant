@@ -42,7 +42,11 @@
       "cup": "cup", "cups": "cups", "tablespoon": "tbsp", "tablespoons": "tbsp",
       "teaspoon": "tsp", "teaspoons": "tsp", "ounce": "oz", "ounces": "oz",
       "pound": "lb", "pounds": "lb", "gram": "g", "grams": "g",
-      "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l"
+      "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l",
+      "Tbsp": "tbsp", "Tbsps": "tbsp", "clove": "clove", "cloves": "cloves",
+      "can": "can", "pinch": "pinch", "serving": "serving",
+      "small": "small", "large": "large", "larges": "large",
+      "slc": "slice", "ea": "each", "eaches": "each"
     }
   },
   "errors": {

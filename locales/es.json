@@ -42,7 +42,11 @@
       "cup": "taza", "cups": "tazas", "tablespoon": "cda", "tablespoons": "cdas",
       "teaspoon": "cdta", "teaspoons": "cdtas", "ounce": "oz", "ounces": "oz",
       "pound": "lb", "pounds": "lb", "gram": "g", "grams": "g",
-      "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l"
+      "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l",
+      "Tbsp": "cda", "Tbsps": "cdas", "clove": "diente", "cloves": "dientes",
+      "can": "lata", "pinch": "pizca", "serving": "porción",
+      "small": "pequeño", "large": "grande", "larges": "grandes",
+      "slc": "rebanada", "ea": "unidad", "eaches": "unidades"
     }
   },
   "errors": {
