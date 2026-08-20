@@ -49,7 +49,8 @@
       "slc": "rebanada", "ea": "unidad", "eaches": "unidades",
       "medium": "mediano", "mediums": "medianos",
       "servings": "porciones",
-      "leave": "hoja", "leaves": "hojas"
+      "leave": "hoja", "leaves": "hojas",
+      "slice": "rebanada", "slices": "rebanadas"
     }
   },
   "errors": {
