@@ -28,6 +28,27 @@ vi.mock('#app/nuxt', () => ({
   useRuntimeConfig: () => ({ spoonacularApiKey: 'TESTKEY' }),
 }));
 
+// The route caches responses via ~/server/utils/blobCache's getJsonCache.
+// Mock it with a fresh in-memory JsonCache per test (reset in beforeEach)
+// so cache state never leaks between tests.
+const hoistedCache = vi.hoisted(() => {
+  function makeCache() {
+    const store = new Map<string, unknown>();
+    return {
+      get: vi.fn(async (key: string) => (store.has(key) ? store.get(key) : null)),
+      set: vi.fn(async (key: string, value: unknown, ...ttl: [number]) => {
+        void ttl;
+        store.set(key, value);
+      }),
+    };
+  }
+  return { makeCache, cache: makeCache() };
+});
+
+vi.mock('~/server/utils/blobCache', () => ({
+  getJsonCache: () => hoistedCache.cache,
+}));
+
 // NOTE (harness adaptation): the handler relies on Nuxt/h3 auto-imported
 // globals (defineEventHandler, getRouterParam, useRuntimeConfig, createError)
 // rather than importing them from '#imports'. A static `import handler from
@@ -44,7 +65,10 @@ beforeAll(async () => {
 });
 
 describe('GET /api/recipes/:id', () => {
-  beforeEach(() => hoisted.fetchMock.mockReset());
+  beforeEach(() => {
+    hoisted.fetchMock.mockReset();
+    hoistedCache.cache = hoistedCache.makeCache();
+  });
 
   it('returns a normalized detail', async () => {
     hoisted.fetchMock.mockResolvedValue({
@@ -58,5 +82,36 @@ describe('GET /api/recipes/:id', () => {
 
   it('throws 400 for non-numeric id', async () => {
     await expect(handler({ context: { params: { id: 'abc' } } } as any)).rejects.toMatchObject({ statusCode: 400 });
+  });
+
+  it('cache miss: calls Spoonacular once and stores the result', async () => {
+    hoisted.fetchMock.mockResolvedValue({
+      id: 5, title: 'Soup', image: 'i', readyInMinutes: 20, servings: 4,
+      extendedIngredients: [], analyzedInstructions: [],
+    });
+    const res = await handler({ context: { params: { id: '5' } } } as any);
+    expect(res.id).toBe(5);
+    expect(hoisted.fetchMock).toHaveBeenCalledOnce();
+    expect(hoistedCache.cache.set).toHaveBeenCalledOnce();
+    expect(await hoistedCache.cache.get('detail:5')).toMatchObject({ id: 5, title: 'Soup' });
+  });
+
+  it('cache hit: returns cached value without calling Spoonacular', async () => {
+    const cached = {
+      id: 7, title: 'Cached Dish', image: 'i', readyInMinutes: 15, servings: 3,
+      ingredients: [], steps: [],
+    };
+    await hoistedCache.cache.set('detail:7', cached, 1000);
+
+    const res = await handler({ context: { params: { id: '7' } } } as any);
+    expect(res).toEqual(cached);
+    expect(hoisted.fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('does not cache on upstream error (402)', async () => {
+    hoisted.fetchMock.mockRejectedValue({ response: { status: 402 } });
+    await expect(handler({ context: { params: { id: '9' } } } as any)).rejects.toMatchObject({ statusCode: 402 });
+    expect(hoistedCache.cache.set).not.toHaveBeenCalled();
+    expect(await hoistedCache.cache.get('detail:9')).toBeNull();
   });
 });
