@@ -47,7 +47,8 @@
       "can": "lata", "pinch": "pizca", "serving": "porción",
       "small": "pequeño", "large": "grande", "larges": "grandes",
       "slc": "rebanada", "ea": "unidad", "eaches": "unidades",
-      "medium": "mediano", "mediums": "medianos"
+      "medium": "mediano", "mediums": "medianos",
+      "servings": "porciones"
     }
   },
   "errors": {
