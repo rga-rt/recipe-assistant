@@ -1,29 +1,33 @@
 <template>
-  <article class="container mx-auto max-w-2xl px-4 py-8">
-    <NuxtLinkLocale to="/" class="text-sm text-gray-500 hover:underline">← {{ t('recipe.back') }}</NuxtLinkLocale>
+  <article class="container mx-auto max-w-2xl px-4 py-10">
+    <NuxtLinkLocale to="/" class="text-sm text-stone-500 transition hover:text-kale">← {{ t('recipe.back') }}</NuxtLinkLocale>
 
-    <img v-if="recipe.image" :src="recipe.image" :alt="title" class="mt-4 h-56 w-full rounded-xl object-cover" >
-    <div class="mt-4 flex items-start justify-between gap-4">
+    <img v-if="recipe.image" :src="recipe.image" :alt="title" class="mt-4 aspect-[16/9] w-full rounded-2xl object-cover" >
+    <div class="mt-6 flex items-start justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
-        <p class="mt-1 text-sm text-gray-500">
-          {{ t('recipe.readyIn', { minutes: recipe.readyInMinutes }) }} · {{ t('recipe.servings', { count: recipe.servings }) }}
+        <h1 class="text-3xl font-bold text-kale sm:text-4xl">{{ title }}</h1>
+        <p class="num mt-2 text-sm text-stone-600">
+          {{ t('recipe.readyIn', { minutes: recipe.readyInMinutes }) }} &middot; {{ t('recipe.servings', { count: recipe.servings }) }}
         </p>
       </div>
       <FavoriteButton :recipe="favoritePayload" />
     </div>
 
-    <h2 class="mt-8 text-xl font-semibold text-gray-900">{{ t('recipe.ingredients') }}</h2>
-    <ul class="mt-3 space-y-1">
-      <li v-for="(ing, i) in recipe.ingredients" :key="ing.id" class="text-gray-700">
-        <span class="font-medium">{{ formatMeasure(ing) }}</span> {{ ingredientNames[i] ?? ing.name }}
+    <h2 class="mt-10 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('recipe.ingredients') }}</h2>
+    <ul class="mt-4 space-y-2">
+      <li v-for="(ing, i) in recipe.ingredients" :key="ing.id" class="flex items-baseline gap-2 text-kale">
+        <span class="num font-medium text-kale">{{ formatMeasure(ing) }}</span>
+        <span>{{ ingredientNames[i] ?? ing.name }}</span>
       </li>
     </ul>
 
-    <h2 class="mt-8 text-xl font-semibold text-gray-900">{{ t('recipe.instructions') }}</h2>
-    <p v-if="recipe.steps.length === 0" class="mt-3 text-gray-500">{{ t('recipe.noInstructions') }}</p>
-    <ol v-else class="mt-3 list-decimal space-y-3 pl-5">
-      <li v-for="(s, i) in recipe.steps" :key="s.number" class="text-gray-700">{{ stepTexts[i] ?? s.step }}</li>
+    <h2 class="mt-10 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('recipe.instructions') }}</h2>
+    <p v-if="recipe.steps.length === 0" class="mt-3 text-stone-500">{{ t('recipe.noInstructions') }}</p>
+    <ol v-else class="mt-4 space-y-4">
+      <li v-for="(s, i) in recipe.steps" :key="s.number" class="flex gap-3 text-kale">
+        <span class="num flex h-6 w-6 flex-none items-center justify-center rounded-full bg-basil text-xs font-semibold text-chalk">{{ i + 1 }}</span>
+        <span class="pt-0.5">{{ stepTexts[i] ?? s.step }}</span>
+      </li>
     </ol>
   </article>
 </template>

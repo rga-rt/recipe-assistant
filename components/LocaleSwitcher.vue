@@ -1,14 +1,14 @@
 <template>
-  <div class="flex gap-2">
+  <div class="inline-flex rounded-lg border border-stone-300 bg-chalk p-0.5 text-sm">
     <NuxtLink
       v-for="loc in availableLocales"
       :key="loc.code"
       :to="switchLocalePath(loc.code as 'en' | 'es')"
-      class="rounded px-3 py-1 text-sm font-medium transition"
+      class="rounded-md px-2.5 py-1 font-medium transition"
       :class="
         loc.code === locale
-          ? 'bg-gray-900 text-white'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ? 'bg-kale text-chalk'
+          : 'text-stone-600 hover:bg-stone-100'
       "
     >
       {{ loc.name }}

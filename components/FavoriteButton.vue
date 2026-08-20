@@ -1,7 +1,7 @@
 <template>
   <button
-    class="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm font-medium transition"
-    :class="active ? 'border-red-200 bg-red-50 text-red-600' : 'border-gray-200 text-gray-600 hover:bg-gray-100'"
+    class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition active:scale-95"
+    :class="active ? 'border-tomato bg-tomato/10 text-tomato' : 'border-stone-300 text-stone-600 hover:border-tomato hover:text-tomato'"
     :aria-pressed="active"
     @click="onClick"
   >

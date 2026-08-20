@@ -1,19 +1,21 @@
 <template>
-  <section class="mb-6">
-    <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+  <section class="mb-8">
+    <h3 class="mb-3 flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">
       {{ t(`categories.${category.id}`) }}
+      <span class="h-px flex-1 bg-stone-200" aria-hidden="true"></span>
     </h3>
     <div class="flex flex-wrap gap-2">
       <button
         v-for="ing in category.ingredients"
         :key="ing.token"
         :data-test="`ingredient-${ing.token}`"
-        class="rounded-full border px-3 py-1.5 text-sm transition"
+        class="chip"
         :class="isSelected(ing.token)
-          ? 'border-gray-900 bg-gray-900 text-white'
-          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400'"
+          ? 'border-saffron bg-saffron-soft text-kale shadow-sm'
+          : 'border-stone-300 bg-chalk text-kale hover:border-basil'"
         @click="toggle(ing.token)"
       >
+        <span v-if="isSelected(ing.token)" aria-hidden="true">✓</span>
         {{ locale === 'es' ? ing.es : ing.en }}
       </button>
     </div>

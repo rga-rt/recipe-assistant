@@ -1,6 +1,6 @@
 <template>
-  <div v-if="offline" class="bg-amber-100 px-4 py-2 text-center text-sm text-amber-900">
-    {{ t('errors.offline') }}
+  <div v-if="offline" class="border-b border-saffron/40 bg-saffron-soft px-4 py-2 text-center">
+    <span class="font-mono text-xs font-semibold uppercase tracking-wider text-kale">{{ t('errors.offline') }}</span>
   </div>
 </template>
 
