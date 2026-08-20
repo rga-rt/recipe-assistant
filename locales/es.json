@@ -1,5 +1,5 @@
 {
-  "nav": { "home": "Inicio", "favorites": "Favoritos" },
+  "nav": { "home": "Inicio", "favorites": "Favoritos", "menu": "Menú", "language": "Idioma" },
   "start": {
     "title": "¿Qué puedes cocinar hoy?",
     "subtitle": "Elige los ingredientes que tienes y obtén ideas de recetas.",

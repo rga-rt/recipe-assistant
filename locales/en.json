@@ -1,5 +1,5 @@
 {
-  "nav": { "home": "Home", "favorites": "Favorites" },
+  "nav": { "home": "Home", "favorites": "Favorites", "menu": "Menu", "language": "Language" },
   "start": {
     "title": "What can you cook today?",
     "subtitle": "Pick the ingredients you have and get recipe ideas.",
