@@ -46,7 +46,8 @@
       "Tbsp": "cda", "Tbsps": "cdas", "clove": "diente", "cloves": "dientes",
       "can": "lata", "pinch": "pizca", "serving": "porción",
       "small": "pequeño", "large": "grande", "larges": "grandes",
-      "slc": "rebanada", "ea": "unidad", "eaches": "unidades"
+      "slc": "rebanada", "ea": "unidad", "eaches": "unidades",
+      "medium": "mediano", "mediums": "medianos"
     }
   },
   "errors": {

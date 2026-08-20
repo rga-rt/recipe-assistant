@@ -46,7 +46,8 @@
       "Tbsp": "tbsp", "Tbsps": "tbsp", "clove": "clove", "cloves": "cloves",
       "can": "can", "pinch": "pinch", "serving": "serving",
       "small": "small", "large": "large", "larges": "large",
-      "slc": "slice", "ea": "each", "eaches": "each"
+      "slc": "slice", "ea": "each", "eaches": "each",
+      "medium": "medium", "mediums": "medium"
     }
   },
   "errors": {
