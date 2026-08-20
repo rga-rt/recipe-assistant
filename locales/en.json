@@ -48,7 +48,8 @@
       "small": "small", "large": "large", "larges": "large",
       "slc": "slice", "ea": "each", "eaches": "each",
       "medium": "medium", "mediums": "medium",
-      "servings": "servings"
+      "servings": "servings",
+      "leave": "leaf", "leaves": "leaves"
     }
   },
   "errors": {
