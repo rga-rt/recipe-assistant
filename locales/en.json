@@ -50,7 +50,21 @@
       "medium": "medium", "mediums": "medium",
       "servings": "servings",
       "leave": "leaf", "leaves": "leaves",
-      "slice": "slice", "slices": "slices"
+      "slice": "slice", "slices": "slices",
+      "piece": "piece", "pieces": "pieces", "sprig": "sprig", "sprigs": "sprigs",
+      "stalk": "stalk", "stalks": "stalks", "head": "head", "heads": "heads",
+      "bunch": "bunch", "bunches": "bunches", "package": "package", "packages": "packages", "pkg": "package",
+      "fillet": "fillet", "fillets": "fillets", "strip": "strip", "strips": "strips",
+      "cube": "cube", "cubes": "cubes", "dash": "dash", "dashes": "dashes",
+      "drop": "drop", "drops": "drops", "handful": "handful", "handfuls": "handfuls",
+      "jar": "jar", "jars": "jars", "bottle": "bottle", "bottles": "bottles",
+      "box": "box", "boxes": "boxes", "bag": "bag", "bags": "bags",
+      "stick": "stick", "sticks": "sticks", "wedge": "wedge", "wedges": "wedges",
+      "quart": "quart", "quarts": "quarts", "pint": "pint", "pints": "pints",
+      "gallon": "gallon", "gallons": "gallons", "dozen": "dozen",
+      "packet": "packet", "packets": "packets", "kilogram": "kg", "kilograms": "kg",
+      "milligram": "mg", "milligrams": "mg", "inch": "inch", "inches": "inches",
+      "smalls": "small"
     }
   },
   "errors": {

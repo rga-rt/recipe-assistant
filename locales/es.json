@@ -50,7 +50,21 @@
       "medium": "mediano", "mediums": "medianos",
       "servings": "porciones",
       "leave": "hoja", "leaves": "hojas",
-      "slice": "rebanada", "slices": "rebanadas"
+      "slice": "rebanada", "slices": "rebanadas",
+      "piece": "pieza", "pieces": "piezas", "sprig": "ramita", "sprigs": "ramitas",
+      "stalk": "tallo", "stalks": "tallos", "head": "cabeza", "heads": "cabezas",
+      "bunch": "manojo", "bunches": "manojos", "package": "paquete", "packages": "paquetes", "pkg": "paquete",
+      "fillet": "filete", "fillets": "filetes", "strip": "tira", "strips": "tiras",
+      "cube": "cubo", "cubes": "cubos", "dash": "pizca", "dashes": "pizcas",
+      "drop": "gota", "drops": "gotas", "handful": "puñado", "handfuls": "puñados",
+      "jar": "frasco", "jars": "frascos", "bottle": "botella", "bottles": "botellas",
+      "box": "caja", "boxes": "cajas", "bag": "bolsa", "bags": "bolsas",
+      "stick": "barra", "sticks": "barras", "wedge": "gajo", "wedges": "gajos",
+      "quart": "cuarto", "quarts": "cuartos", "pint": "pinta", "pints": "pintas",
+      "gallon": "galón", "gallons": "galones", "dozen": "docena",
+      "packet": "sobre", "packets": "sobres", "kilogram": "kg", "kilograms": "kg",
+      "milligram": "mg", "milligrams": "mg", "inch": "pulgada", "inches": "pulgadas",
+      "smalls": "pequeños"
     }
   },
   "errors": {
