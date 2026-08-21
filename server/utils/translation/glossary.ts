@@ -12,6 +12,9 @@ export function fixCulinary(text: string): string {
   for (const [pattern, replacement] of REPLACEMENTS) {
     out = out.replace(pattern, replacement);
   }
+  // Strip machine-translation disambiguation tags that leak into names,
+  // e.g. "feta de queso (sustancia)".
+  out = out.replace(/\s*\((?:sustancia|substance)\)/gi, '');
   // Safety net: collapse any accidental duplicated preposition.
   return out.replace(/\ben\s+en\b/gi, 'en');
 }

@@ -16,6 +16,10 @@ describe('fixCulinary', () => {
     );
   });
 
+  it('strips leaked MT disambiguation tags', () => {
+    expect(fixCulinary('feta de queso (sustancia)')).toBe('feta de queso');
+  });
+
   it('leaves unrelated text untouched', () => {
     expect(fixCulinary('sal y pimienta')).toBe('sal y pimienta');
   });

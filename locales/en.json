@@ -8,6 +8,7 @@
   "select": {
     "title": "Select your ingredients",
     "hint": "Choose one or more ingredients across the categories.",
+    "tip": "Tip: pick 2–3 for the best matches.",
     "selectedCount": "{count} selected | {count} selected",
     "search": "Search ingredients",
     "noMatches": "No ingredients match your search.",

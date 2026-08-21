@@ -1,12 +1,12 @@
 <template>
   <div class="container relative mx-auto flex min-h-[70vh] flex-col items-center justify-center overflow-hidden px-4 text-center">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
-      <span class="chip absolute left-[6%] top-[16%] rotate-[-6deg] border-saffron bg-saffron-soft text-kale shadow-sm sm:left-[11%]">✓ Tomato</span>
-      <span class="chip absolute right-[7%] top-[11%] rotate-[4deg] border-stone-300 bg-chalk text-stone-600 shadow-sm sm:right-[13%]">Garlic</span>
-      <span class="chip absolute bottom-[20%] left-[9%] rotate-[3deg] border-saffron bg-saffron-soft text-kale shadow-sm sm:left-[17%]">✓ Basil</span>
-      <span class="chip absolute bottom-[14%] right-[9%] rotate-[-3deg] border-stone-300 bg-chalk text-stone-600 shadow-sm sm:right-[19%]">Lemon</span>
-      <span class="chip absolute right-[24%] top-[28%] hidden rotate-[5deg] border-stone-300 bg-chalk text-stone-600 shadow-sm sm:inline-flex">Onion</span>
-      <span class="chip absolute bottom-[30%] left-[24%] hidden rotate-[-4deg] border-saffron bg-saffron-soft text-kale shadow-sm lg:inline-flex">✓ Chile</span>
+      <span class="chip absolute left-[5%] top-[15%] rotate-[-6deg] border-saffron bg-saffron-soft text-kale shadow-sm sm:left-[9%]">Tomato</span>
+      <span class="chip absolute right-[6%] top-[11%] rotate-[4deg] border-stone-300 bg-chalk text-stone-600 shadow-sm sm:right-[11%]">Garlic</span>
+      <span class="chip absolute bottom-[18%] left-[6%] rotate-[3deg] border-saffron bg-saffron-soft text-kale shadow-sm sm:left-[12%]">Basil</span>
+      <span class="chip absolute bottom-[13%] right-[6%] rotate-[-3deg] border-stone-300 bg-chalk text-stone-600 shadow-sm sm:right-[13%]">Lemon</span>
+      <span class="chip absolute right-[4%] top-[46%] hidden rotate-[5deg] border-stone-300 bg-chalk text-stone-600 shadow-sm sm:inline-flex">Onion</span>
+      <span class="chip absolute left-[4%] top-[47%] hidden rotate-[-4deg] border-saffron bg-saffron-soft text-kale shadow-sm lg:inline-flex">Chile</span>
     </div>
 
     <div class="relative z-10 flex flex-col items-center">

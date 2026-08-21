@@ -2,6 +2,7 @@
   <div class="container mx-auto px-4 py-10 pb-40">
     <h2 class="text-2xl font-bold text-kale sm:text-3xl">{{ t('select.title') }}</h2>
     <p class="mt-2 text-stone-600">{{ t('select.hint') }}</p>
+    <p class="mt-1 text-sm text-stone-500">{{ t('select.tip') }}</p>
 
     <div class="mt-6 max-w-md">
       <input
