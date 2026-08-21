@@ -160,12 +160,37 @@ function formatMeasure(ing: RecipeIngredient): string {
   // "serving"/"servings" is a placeholder unit (e.g. "salt and pepper to taste") — omit it.
   if (['serving', 'servings'].includes(rawUnit)) return '';
   const amount = prettyAmount(m.amount, m.unitShort);
-  // Pick the English number form that matches the amount, then translate it.
-  // Fall back to the raw unit unchanged (never an invented word) if it's unknown.
   const raw = (m.unitLong || m.unitShort || '').trim();
-  const wanted = m.amount <= 1 ? singularizeUnit(raw) : pluralizeUnit(singularizeUnit(raw));
-  const unit = unitWord(wanted) ?? unitWord(raw) ?? raw;
-  return `${amount} ${unit}`.trim();
+  return `${amount} ${translateUnit(raw, m.amount)}`.trim();
+}
+
+// Size adjectives Spoonacular uses as (or in front of) units.
+const SIZE_WORDS = new Set([
+  'large', 'larges', 'small', 'smalls', 'medium', 'mediums', 'big', 'little', 'jumbo', 'jumbos',
+]);
+
+// Translate one unit word: try the amount-appropriate English form, then the raw
+// form, then the singular (so a missing plural key like "pinches" still resolves
+// via "pinch"). Returns null when the word isn't a known unit.
+function resolveUnit(word: string, amount: number): string | null {
+  const wanted = amount <= 1 ? singularizeUnit(word) : pluralizeUnit(singularizeUnit(word));
+  return unitWord(wanted) ?? unitWord(word) ?? unitWord(singularizeUnit(word));
+}
+
+// Translate a (possibly multi-word) unit. "large knob" -> "nuez grande" in
+// Spanish (noun + adjective order), "large knob" in English. Unknown units fall
+// back to the raw text unchanged — never an invented word.
+function translateUnit(raw: string, amount: number): string {
+  if (!raw) return raw;
+  const direct = resolveUnit(raw, amount);
+  if (direct) return direct;
+  const tokens = raw.split(/\s+/);
+  if (tokens.length === 2 && SIZE_WORDS.has(tokens[0].toLowerCase())) {
+    const adj = resolveUnit(tokens[0], amount) ?? tokens[0];
+    const noun = resolveUnit(tokens[1], amount) ?? tokens[1];
+    return locale.value === 'es' ? `${noun} ${adj}` : `${adj} ${noun}`;
+  }
+  return raw;
 }
 
 // Capitalize the ingredient name only when it leads the line (no measure in

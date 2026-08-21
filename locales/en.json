@@ -78,6 +78,9 @@
       "packet": "packet", "packets": "packets", "kilogram": "kg", "kilograms": "kg",
       "milligram": "mg", "milligrams": "mg", "inch": "inch", "inches": "inches",
       "smalls": "small",
+      "big": "big", "little": "little", "jumbo": "jumbo", "jumbos": "jumbo",
+      "knob": "knob", "knobs": "knob", "scoop": "scoop", "scoops": "scoop",
+      "pinches": "pinch", "kg": "kg", "kgs": "kg", "cans": "can",
       "glass": "glass", "glasses": "glasses",
       "fl. oz.": "fl oz", "fl. oz.s": "fl oz",
       "Tb": "tbsp", "Tbs": "tbsp"
