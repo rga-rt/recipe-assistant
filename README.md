@@ -5,6 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8?logo=pwa&logoColor=white)](https://vite-pwa-org.netlify.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./README.md#license)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f934c2c5-a4e7-4ba4-a21f-70c0ce00e6bc/deploy-status)](https://app.netlify.com/projects/recipe-assist/deploys)
 
 A **Nuxt 3** recipe finder: pick the ingredients you have on hand, get matching
 recipes from Spoonacular, and view full recipe detail — translated to Spanish

@@ -3,5 +3,6 @@
     <AppHeader />
     <OfflineBanner />
     <NuxtPage />
+    <InstallPrompt />
   </div>
 </template>
