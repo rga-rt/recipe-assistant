@@ -1,5 +1,11 @@
 {
   "nav": { "home": "Inicio", "favorites": "Favoritos", "menu": "Menú", "language": "Idioma" },
+  "install": {
+    "title": "Instalar Recipe Assistant",
+    "install": "Instalar",
+    "notNow": "Ahora no",
+    "iosHint": "Toca Compartir → Añadir a pantalla de inicio"
+  },
   "start": {
     "title": "¿Qué puedes cocinar hoy?",
     "subtitle": "Elige los ingredientes que tienes y obtén ideas de recetas.",

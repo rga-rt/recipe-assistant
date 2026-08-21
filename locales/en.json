@@ -1,5 +1,11 @@
 {
   "nav": { "home": "Home", "favorites": "Favorites", "menu": "Menu", "language": "Language" },
+  "install": {
+    "title": "Install Recipe Assistant",
+    "install": "Install",
+    "notNow": "Not now",
+    "iosHint": "Tap Share → Add to Home Screen"
+  },
   "start": {
     "title": "What can you cook today?",
     "subtitle": "Pick the ingredients you have and get recipe ideas.",
