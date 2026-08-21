@@ -5,15 +5,19 @@
     <div class="container mx-auto px-4">
       <div class="flex h-14 items-center justify-between gap-4">
         <div class="flex items-center gap-6">
-          <span
+          <NuxtLinkLocale
+            to="/"
             class="font-display text-lg font-extrabold tracking-tight text-kale"
-            >mise.</span
+            @click="goHome"
           >
+            mise.
+          </NuxtLinkLocale>
           <nav class="hidden items-center gap-6 text-sm font-medium sm:flex">
             <NuxtLinkLocale
               to="/"
               class="text-stone-600 transition hover:text-kale"
               active-class="text-basil hover:text-basil"
+              @click="goHome"
             >
               {{ t('nav.home') }}
             </NuxtLinkLocale>
@@ -91,6 +95,7 @@
               to="/"
               class="rounded-lg px-2 py-2.5 text-stone-700 transition hover:bg-stone-100"
               active-class="text-basil"
+              @click="goHome"
             >
               {{ t('nav.home') }}
             </NuxtLinkLocale>
@@ -129,7 +134,15 @@
 <script setup lang="ts">
 const { t } = useI18n();
 const route = useRoute();
+const { goStart } = useRecipeFinder();
 const open = ref(false);
+
+// Home / wordmark returns to the finder's start screen (the step lives in
+// shared state, so navigating to "/" alone would keep the current step).
+function goHome() {
+  goStart();
+  open.value = false;
+}
 
 // Close the menu whenever the route changes (covers nav link taps).
 watch(
