@@ -3,7 +3,8 @@
 // consumers. Idempotent — re-applying to already-fixed text is a no-op.
 const REPLACEMENTS: Array<[RegExp, string]> = [
   [/gasa de albahaca/gi, 'albahaca en chiffonade'],
-  [/\bchiffonade\b/gi, 'en chiffonade'],
+  // Consume an optional preceding "en" so we don't produce "en en chiffonade".
+  [/\b(?:en\s+)?chiffonade\b/gi, 'en chiffonade'],
 ];
 
 export function fixCulinary(text: string): string {
@@ -11,5 +12,6 @@ export function fixCulinary(text: string): string {
   for (const [pattern, replacement] of REPLACEMENTS) {
     out = out.replace(pattern, replacement);
   }
-  return out;
+  // Safety net: collapse any accidental duplicated preposition.
+  return out.replace(/\ben\s+en\b/gi, 'en');
 }
