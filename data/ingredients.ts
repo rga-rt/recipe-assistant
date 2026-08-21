@@ -130,6 +130,7 @@ export const INGREDIENT_CATEGORIES: IngredientCategory[] = [
       { token: 'salsa verde', en: 'Green sauce', es: 'Salsa verde' },
       { token: 'mayonnaise', en: 'Mayo', es: 'Mayonesa' },
       { token: 'ketchup', en: 'Ketchup', es: 'Cátsup' },
+      { token: 'worcestershire sauce', en: 'Worcestershire sauce', es: 'Salsa inglesa' },
       { token: 'soy sauce', en: 'Soy sauce', es: 'Salsa de soja' },
     ],
   },
