@@ -92,4 +92,28 @@ describe('RecipeDetailView Spanish unit rendering', () => {
     expect(text).toContain('taza');
     expect(text).not.toContain('ml');
   });
+
+  it('translates a multi-word "size + noun" unit with Spanish word order', async () => {
+    // "large knob" -> "nuez grande" (noun + adjective), not "large knob".
+    const text = await ingredientLine({ amount: 1, unitShort: 'large knob', unitLong: 'large knob' });
+    expect(text).toContain('nuez grande');
+    expect(text).not.toContain('large knob');
+  });
+
+  it('pluralizes the noun in a multi-word unit ("large cans" -> "latas grandes")', async () => {
+    const text = await ingredientLine({ amount: 2, unitShort: 'large cans', unitLong: 'large cans' });
+    expect(text).toContain('latas grandes');
+  });
+
+  it('resolves a plural unit via its singular when the plural key is missing ("pinches" -> "pizcas")', async () => {
+    const text = await ingredientLine({ amount: 3, unitShort: 'pinches', unitLong: 'pinches' });
+    expect(text).toContain('pizcas');
+    expect(text).not.toContain('pinches');
+  });
+
+  it('normalizes a stray metric plural ("kgs" -> "kg")', async () => {
+    const text = await ingredientLine({ amount: 2, unitShort: 'kgs', unitLong: 'kgs' });
+    expect(text).toContain('kg');
+    expect(text).not.toContain('kgs');
+  });
 });
