@@ -74,4 +74,10 @@ describe('RecipeDetailView Spanish unit rendering', () => {
     const text = await ingredientLine({ amount: 2, unitShort: 'blorp', unitLong: 'blorps' });
     expect(text).toContain('blorps');
   });
+
+  it('translates "ounces" to Spanish, not the English abbreviation "oz"', async () => {
+    const text = await ingredientLine({ amount: 24, unitShort: 'oz', unitLong: 'ounces' });
+    expect(text).toContain('onzas');
+    expect(text).not.toContain('24 oz ');
+  });
 });

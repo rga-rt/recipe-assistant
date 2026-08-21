@@ -51,4 +51,23 @@ describe('RecipeDetailView ingredient-name cleanup (Spanish)', () => {
     expect(text).toContain('tocino graso');
     expect(text).not.toContain('tocino graso.'); // trailing period stripped
   });
+
+  it('capitalizes a name that leads the line (no measure) but not one after a number', async () => {
+    const serving = { amount: 1, unitShort: 'serving', unitLong: 'serving' };
+    const numbered = { amount: 2, unitShort: '', unitLong: '' }; // renders "2" prefix
+    const recipe = {
+      id: 1, title: 'X', image: '', readyInMinutes: 10, servings: 2,
+      ingredients: [
+        { id: 0, name: 'salt to taste', us: serving, metric: serving },
+        { id: 1, name: 'eggs', us: numbered, metric: numbered },
+      ],
+      steps: [{ number: 1, step: 'Do it' }],
+    };
+    const wrapper = await mountSuspended(RecipeDetailView, { props: { recipe } });
+    (useNuxtApp() as any).$i18n.locale.value = 'es';
+    await flushPromises();
+    const text = wrapper.text();
+    expect(text).toContain('Salt to taste'); // name leads → capitalized
+    expect(text).toContain('2eggs'); // number-led → name stays lowercase (spans render adjacent)
+  });
 });

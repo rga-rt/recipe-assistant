@@ -53,8 +53,8 @@
     "imperial": "Imperial",
     "words": {
       "cup": "taza", "cups": "tazas", "tablespoon": "cda", "tablespoons": "cdas",
-      "teaspoon": "cdta", "teaspoons": "cdtas", "ounce": "oz", "ounces": "oz",
-      "pound": "lb", "pounds": "lb", "gram": "g", "grams": "g",
+      "teaspoon": "cdta", "teaspoons": "cdtas", "ounce": "onza", "ounces": "onzas",
+      "pound": "libra", "pounds": "libras", "gram": "g", "grams": "g",
       "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l",
       "Tbsp": "cda", "Tbsps": "cdas", "clove": "diente", "cloves": "dientes",
       "can": "lata", "pinch": "pizca", "serving": "porción",

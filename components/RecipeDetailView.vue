@@ -18,7 +18,7 @@
     <ul v-if="ready" class="mt-4 space-y-2">
       <li v-for="(ing, i) in recipe.ingredients" :key="ing.id" class="flex items-baseline gap-2 text-kale">
         <span v-if="formatMeasure(ing)" class="num font-medium text-kale">{{ formatMeasure(ing) }}</span>
-        <span>{{ ingredientNames[i] ?? ing.name }}</span>
+        <span>{{ ingredientLabel(ing, ingredientNames[i] ?? ing.name) }}</span>
       </li>
     </ul>
     <ul v-else class="mt-4 space-y-2">
@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import type { RecipeDetail, RecipeIngredient, FavoriteRecipe } from '~/types/recipe';
-import { cleanIngredientName, sanitizeTranslatedName } from '~/utils/ingredientName';
+import { cleanIngredientName, sanitizeTranslatedName, capitalizeFirst } from '~/utils/ingredientName';
 
 const props = defineProps<{ recipe: RecipeDetail }>();
 const { t, tm, rt, locale } = useI18n();
@@ -159,6 +159,13 @@ function formatMeasure(ing: RecipeIngredient): string {
   const wanted = m.amount <= 1 ? singularizeUnit(raw) : pluralizeUnit(singularizeUnit(raw));
   const unit = unitWord(wanted) ?? unitWord(raw) ?? raw;
   return `${amount} ${unit}`.trim();
+}
+
+// Capitalize the ingredient name only when it leads the line (no measure in
+// front). Number-led lines like "3 dientes de ajo" stay lowercase after the
+// number; placeholder items like "salt to taste" become "Salt to taste".
+function ingredientLabel(ing: RecipeIngredient, name: string): string {
+  return formatMeasure(ing) ? name : capitalizeFirst(name);
 }
 
 const favoritePayload = computed<FavoriteRecipe>(() => ({

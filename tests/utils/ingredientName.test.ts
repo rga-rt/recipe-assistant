@@ -1,5 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { cleanIngredientName, sanitizeTranslatedName } from '~/utils/ingredientName';
+import { cleanIngredientName, sanitizeTranslatedName, capitalizeFirst } from '~/utils/ingredientName';
+
+describe('capitalizeFirst', () => {
+  it('capitalizes the first letter, leaving the rest untouched', () => {
+    expect(capitalizeFirst('salt to taste')).toBe('Salt to taste');
+    expect(capitalizeFirst('juice')).toBe('Juice');
+    expect(capitalizeFirst('sal al gusto')).toBe('Sal al gusto');
+  });
+
+  it('is a no-op for empty strings and already-capitalized text', () => {
+    expect(capitalizeFirst('')).toBe('');
+    expect(capitalizeFirst('Eggs')).toBe('Eggs');
+  });
+});
 
 describe('cleanIngredientName (source cleaning)', () => {
   it('strips a leading unit/prep abbreviation from a dirty Spoonacular name', () => {

@@ -8,6 +8,12 @@
 // Leading tokens that are unit/prep abbreviations, not part of the food name.
 const LEADING_ABBREVIATIONS = new Set(['slc', 'pkg', 'lg', 'sm', 'med', 'pc', 'pcs']);
 
+/** Capitalize the first letter, leaving the rest untouched. No-op on empty input. */
+export function capitalizeFirst(s: string): string {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 /** Strip leading unit/prep abbreviations from a raw Spoonacular ingredient name. */
 export function cleanIngredientName(name: string): string {
   let tokens = name.trim().split(/\s+/);
