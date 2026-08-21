@@ -8,7 +8,7 @@
         <h1 v-if="ready" class="text-3xl font-bold text-kale sm:text-4xl">{{ title }}</h1>
         <div v-else class="h-9 w-2/3 animate-pulse rounded bg-stone-100"></div>
         <p class="num mt-2 text-sm text-stone-600">
-          {{ t('recipe.readyIn', { minutes: recipe.readyInMinutes }) }} &middot; {{ t('recipe.servings', { count: recipe.servings }) }}
+          {{ t('recipe.readyIn', { minutes: recipe.readyInMinutes }) }} &middot; {{ t('recipe.servings', { count: recipe.servings }, recipe.servings) }}
         </p>
       </div>
       <FavoriteButton :recipe="favoritePayload" />
@@ -114,13 +114,20 @@ function prettyAmount(amount: number, unitShort: string): string {
   if (Number.isInteger(amount)) return String(amount);
   return String(Math.round(amount * 10) / 10);
 }
+// Choose the singular/plural unit form from the amount: "¼ cup" / "2 cups".
+function pluralizeUnit(unitLong: string, amount: number): string {
+  if (!unitLong) return unitLong;
+  const lower = unitLong.toLowerCase();
+  const singular = lower.endsWith('s') ? lower.slice(0, -1) : lower;
+  return amount <= 1 ? singular : `${singular}s`;
+}
 function formatMeasure(ing: RecipeIngredient): string {
   const m = unitSystem.value === 'metric' ? ing.metric : ing.us;
   const rawUnit = (m.unitShort || m.unitLong || '').toLowerCase();
   // "serving"/"servings" is a placeholder unit (e.g. "salt and pepper to taste") — omit it.
   if (['serving', 'servings'].includes(rawUnit)) return '';
   const amount = prettyAmount(m.amount, m.unitShort);
-  const unit = unitWord(m.unitLong) || m.unitShort;
+  const unit = unitWord(pluralizeUnit(m.unitLong, m.amount)) || m.unitShort;
   return `${amount} ${unit}`.trim();
 }
 

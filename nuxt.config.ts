@@ -7,6 +7,9 @@ export default defineNuxtConfig({
     strict: true,
   },
   app: {
+    // Soften navigations (incl. the locale switch) with a short fade
+    // instead of a hard blank frame.
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

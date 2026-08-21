@@ -8,7 +8,7 @@
   "select": {
     "title": "Select your ingredients",
     "hint": "Choose one or more ingredients across the categories.",
-    "selectedCount": "{count} selected",
+    "selectedCount": "{count} selected | {count} selected",
     "search": "Search ingredients",
     "noMatches": "No ingredients match your search.",
     "getRecipes": "Get recipes",
@@ -25,7 +25,7 @@
   },
   "recipe": {
     "readyIn": "Ready in {minutes} min",
-    "servings": "{count} servings",
+    "servings": "{count} serving | {count} servings",
     "ingredients": "Ingredients",
     "instructions": "Instructions",
     "noInstructions": "No instructions provided.",

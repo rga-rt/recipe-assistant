@@ -3,7 +3,7 @@
     :to="`/recipe/${recipe.id}`"
     class="block overflow-hidden rounded-2xl bg-chalk shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
   >
-    <div class="aspect-[4/3] w-full bg-stone-100">
+    <div class="aspect-[4/3] w-full bg-stone-100" :class="{ 'animate-pulse': !loaded }">
       <img
         v-if="recipe.image"
         :src="recipe.image"

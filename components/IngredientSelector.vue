@@ -43,7 +43,7 @@
         </div>
         <div class="flex items-center justify-between gap-4">
           <span class="num text-sm font-medium text-kale">{{
-            t('select.selectedCount', { count: selected.length })
+            t('select.selectedCount', { count: selected.length }, selected.length)
           }}</span>
           <div class="flex gap-2">
             <button
