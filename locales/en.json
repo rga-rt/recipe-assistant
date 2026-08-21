@@ -9,6 +9,8 @@
     "title": "Select your ingredients",
     "hint": "Choose one or more ingredients across the categories.",
     "selectedCount": "{count} selected",
+    "search": "Search ingredients",
+    "noMatches": "No ingredients match your search.",
     "getRecipes": "Get recipes",
     "clear": "Clear",
     "back": "Back"

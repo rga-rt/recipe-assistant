@@ -9,6 +9,8 @@
     "title": "Selecciona tus ingredientes",
     "hint": "Elige uno o más ingredientes entre las categorías.",
     "selectedCount": "{count} seleccionados",
+    "search": "Buscar ingredientes",
+    "noMatches": "Ningún ingrediente coincide con tu búsqueda.",
     "getRecipes": "Buscar recetas",
     "clear": "Limpiar",
     "back": "Atrás"
