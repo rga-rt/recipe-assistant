@@ -78,6 +78,8 @@
       "packet": "sobre", "packets": "sobres", "kilogram": "kg", "kilograms": "kg",
       "milligram": "mg", "milligrams": "mg", "inch": "pulgada", "inches": "pulgadas",
       "smalls": "pequeños",
+      "glass": "vaso", "glasses": "vasos",
+      "fl. oz.": "oz líq", "fl. oz.s": "oz líq",
       "Tb": "cda", "Tbs": "cdas"
     }
   },
