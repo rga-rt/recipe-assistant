@@ -26,11 +26,12 @@
     "ingredients": "Ingredientes",
     "instructions": "Instrucciones",
     "noInstructions": "No se proporcionaron instrucciones.",
+    "stepsNote": "Las cantidades de los pasos usan las unidades originales de la receta.",
     "back": "Volver a resultados"
   },
   "favorites": {
     "title": "Tus favoritos",
-    "empty": "Aún no hay favoritos. Toca el corazón en una receta para guardarla.",
+    "empty": "Aún no hay favoritos. Abre una receta y toca Guardar en favoritos — aparecerá aquí.",
     "add": "Guardar en favoritos",
     "remove": "Quitar de favoritos"
   },

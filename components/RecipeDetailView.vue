@@ -22,6 +22,12 @@
     </ul>
 
     <h2 class="mt-10 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('recipe.instructions') }}</h2>
+    <p
+      v-if="recipe.steps.length && unitSystem === 'metric'"
+      class="mt-2 text-xs text-stone-500"
+    >
+      {{ t('recipe.stepsNote') }}
+    </p>
     <p v-if="recipe.steps.length === 0" class="mt-3 text-stone-500">{{ t('recipe.noInstructions') }}</p>
     <ol v-else class="mt-4 space-y-4">
       <li v-for="(s, i) in recipe.steps" :key="s.number" class="flex gap-3 text-kale">
@@ -58,9 +64,22 @@ function unitWord(word: string): string {
   const words = tm('units.words') as Record<string, unknown>;
   return words && word in words ? rt(words[word] as string) : word;
 }
+// Round to increments a cook actually uses — never centigram precision.
+function prettyAmount(amount: number, unitShort: string): string {
+  if (Number.isInteger(amount)) return String(amount);
+  const u = unitShort.toLowerCase();
+  const bulkMetric = ['g', 'ml', 'gram', 'grams', 'milliliter', 'milliliters'].includes(u);
+  if (bulkMetric) {
+    if (amount >= 100) return String(Math.round(amount / 5) * 5); // nearest 5 g/ml
+    if (amount >= 10) return String(Math.round(amount)); // whole g/ml
+    return String(Math.round(amount * 10) / 10); // one decimal for tiny amounts
+  }
+  // cups / tbsp / tsp / oz / lb / counts: at most one decimal
+  return String(Math.round(amount * 10) / 10);
+}
 function formatMeasure(ing: RecipeIngredient): string {
   const m = unitSystem.value === 'metric' ? ing.metric : ing.us;
-  const amount = Number.isInteger(m.amount) ? String(m.amount) : m.amount.toFixed(2).replace(/\.?0+$/, '');
+  const amount = prettyAmount(m.amount, m.unitShort);
   const unit = unitWord(m.unitLong) || m.unitShort;
   return `${amount} ${unit}`.trim();
 }

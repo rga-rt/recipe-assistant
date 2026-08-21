@@ -26,11 +26,12 @@
     "ingredients": "Ingredients",
     "instructions": "Instructions",
     "noInstructions": "No instructions provided.",
+    "stepsNote": "Step amounts use the recipe's original units.",
     "back": "Back to results"
   },
   "favorites": {
     "title": "Your favorites",
-    "empty": "No favorites yet. Tap the heart on a recipe to save it.",
+    "empty": "No favorites yet. Open a recipe and tap Save to favorites — it'll show up here.",
     "add": "Save to favorites",
     "remove": "Remove from favorites"
   },
