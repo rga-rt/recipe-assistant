@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import type { RecipeDetail, RecipeIngredient, FavoriteRecipe } from '~/types/recipe';
 import { cleanIngredientName, sanitizeTranslatedName, capitalizeFirst } from '~/utils/ingredientName';
+import { toMetric } from '~/utils/unitConvert';
 
 const props = defineProps<{ recipe: RecipeDetail }>();
 const { t, tm, rt, locale } = useI18n();
@@ -148,7 +149,13 @@ function prettyAmount(amount: number, unitShort: string): string {
   return String(Math.round(amount * 10) / 10);
 }
 function formatMeasure(ing: RecipeIngredient): string {
-  const m = unitSystem.value === 'metric' ? ing.metric : ing.us;
+  let m = unitSystem.value === 'metric' ? ing.metric : ing.us;
+  // Spoonacular sometimes returns imperial units inside the metric measure
+  // (oz, fl. oz., inches). On the metric (Spanish) side, convert those.
+  if (unitSystem.value === 'metric') {
+    const converted = toMetric(m.amount, m.unitShort || m.unitLong);
+    if (converted) m = { amount: converted.amount, unitShort: converted.unit, unitLong: converted.unit };
+  }
   const rawUnit = (m.unitShort || m.unitLong || '').toLowerCase();
   // "serving"/"servings" is a placeholder unit (e.g. "salt and pepper to taste") — omit it.
   if (['serving', 'servings'].includes(rawUnit)) return '';
