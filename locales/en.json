@@ -1,21 +1,89 @@
 {
-  "nav": {
-    "home": "Home",
-    "recipes": "Recipes",
-    "about": "About"
+  "nav": { "home": "Home", "favorites": "Favorites", "menu": "Menu", "language": "Language" },
+  "start": {
+    "title": "What can you cook today?",
+    "subtitle": "Pick the ingredients you have and get recipe ideas.",
+    "cta": "Start"
   },
-  "hero": {
-    "title": "Recipe Assistant",
-    "subtitle": "Cook something great, in English or Spanish"
+  "select": {
+    "title": "Select your ingredients",
+    "hint": "Choose one or more ingredients across the categories.",
+    "tip": "Tip: pick 2–3 for the best matches.",
+    "selectedCount": "{count} selected | {count} selected",
+    "search": "Search ingredients",
+    "noMatches": "No ingredients match your search.",
+    "getRecipes": "Get recipes",
+    "clear": "Clear",
+    "back": "Back"
   },
-  "recipes": {
-    "title": "Featured recipes",
-    "noRecipesYet": "No recipes yet",
-    "minutes": "min",
-    "viewRecipe": "View recipe"
+  "results": {
+    "title": "Recipe suggestions",
+    "usesCount": "Uses {used} of your ingredients",
+    "missingCount": "{count} more needed",
+    "empty": "No recipes found. Try different or fewer ingredients.",
+    "loading": "Finding recipes…",
+    "newSearch": "New search"
   },
-  "common": {
-    "loading": "Loading...",
-    "error": "Something went wrong"
+  "recipe": {
+    "readyIn": "Ready in {minutes} min",
+    "servings": "{count} serving | {count} servings",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "noInstructions": "No instructions provided.",
+    "stepsNote": "Step amounts use the recipe's original units.",
+    "loading": "Loading recipe…",
+    "back": "Back to results"
+  },
+  "favorites": {
+    "title": "Your favorites",
+    "empty": "No favorites yet. Open a recipe and tap Save to favorites — it'll show up here.",
+    "add": "Save to favorites",
+    "remove": "Remove from favorites",
+    "cta": "Find recipes"
+  },
+  "units": {
+    "label": "Units",
+    "metric": "Metric",
+    "imperial": "Imperial",
+    "words": {
+      "cup": "cup", "cups": "cups", "tablespoon": "tbsp", "tablespoons": "tbsp",
+      "teaspoon": "tsp", "teaspoons": "tsp", "ounce": "oz", "ounces": "oz",
+      "pound": "lb", "pounds": "lb", "gram": "g", "grams": "g",
+      "milliliter": "ml", "milliliters": "ml", "liter": "l", "liters": "l",
+      "Tbsp": "tbsp", "Tbsps": "tbsp", "clove": "clove", "cloves": "cloves",
+      "can": "can", "pinch": "pinch", "serving": "serving",
+      "small": "small", "large": "large", "larges": "large",
+      "slc": "slice", "ea": "each", "eaches": "each",
+      "medium": "medium", "mediums": "medium",
+      "servings": "servings",
+      "leave": "leaf", "leaves": "leaves",
+      "slice": "slice", "slices": "slices",
+      "piece": "piece", "pieces": "pieces", "sprig": "sprig", "sprigs": "sprigs",
+      "stalk": "stalk", "stalks": "stalks", "head": "head", "heads": "heads",
+      "bunch": "bunch", "bunches": "bunches", "package": "package", "packages": "packages", "pkg": "package",
+      "fillet": "fillet", "fillets": "fillets", "strip": "strip", "strips": "strips",
+      "cube": "cube", "cubes": "cubes", "dash": "dash", "dashes": "dashes",
+      "drop": "drop", "drops": "drops", "handful": "handful", "handfuls": "handfuls",
+      "jar": "jar", "jars": "jars", "bottle": "bottle", "bottles": "bottles",
+      "box": "box", "boxes": "boxes", "bag": "bag", "bags": "bags",
+      "stick": "stick", "sticks": "sticks", "wedge": "wedge", "wedges": "wedges",
+      "quart": "quart", "quarts": "quarts", "pint": "pint", "pints": "pints",
+      "gallon": "gallon", "gallons": "gallons", "dozen": "dozen",
+      "packet": "packet", "packets": "packets", "kilogram": "kg", "kilograms": "kg",
+      "milligram": "mg", "milligrams": "mg", "inch": "inch", "inches": "inches",
+      "smalls": "small",
+      "Tb": "tbsp", "Tbs": "tbsp"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "quota": "The recipe service is busy right now (daily limit). Try again later.",
+    "offline": "You're offline. Search and translation need a connection — your saved favorites still work.",
+    "retry": "Retry"
+  },
+  "categories": {
+    "vegetables": "Vegetables", "fruits": "Fruits", "proteins": "Proteins",
+    "dairy-eggs": "Dairy & Eggs", "grains-pasta": "Grains & Pasta",
+    "legumes": "Legumes", "herbs-spices": "Herbs & Spices", "pantry-oils": "Pantry & Oils"
   }
 }

@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-ceramic text-kale font-sans antialiased; }
+  h1, h2, h3, h4 { @apply font-display; letter-spacing: -0.02em; }
+  :focus-visible { outline: 2px solid theme('colors.basil.DEFAULT'); outline-offset: 2px; border-radius: 4px; }
+}
+
+@layer components {
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition active:scale-95; }
+  .num  { @apply font-mono tabular-nums; }
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.18s ease;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

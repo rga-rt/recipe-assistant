@@ -1,41 +1,19 @@
+// @vitest-environment nuxt
 import { describe, it, expect } from 'vitest';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import RecipeCard from '~/components/RecipeCard.vue';
-import type { Recipe } from '~/types/recipe';
 
-const recipe: Recipe = {
-  id: 1,
-  title: 'Classic Margherita Pizza',
-  description: 'Blistered crust, San Marzano tomato, fresh mozzarella, basil.',
-  minutes: 45,
-  tags: ['italian', 'vegetarian'],
-};
+const recipe = { id: 7, title: 'Soup', image: 'http://img/7.jpg', usedCount: 3, missedCount: 1 };
 
 describe('RecipeCard', () => {
-  it('renders the recipe title and description', async () => {
-    const wrapper = await mountSuspended(RecipeCard, {
-      props: { recipe },
-    });
-
-    expect(wrapper.text()).toContain('Classic Margherita Pizza');
-    expect(wrapper.text()).toContain('San Marzano tomato');
+  it('renders the title and links to the recipe detail', async () => {
+    const wrapper = await mountSuspended(RecipeCard, { props: { recipe } });
+    expect(wrapper.text()).toContain('Soup');
+    expect(wrapper.find('a').attributes('href')).toContain('/recipe/7');
   });
 
-  it('renders each tag', async () => {
-    const wrapper = await mountSuspended(RecipeCard, {
-      props: { recipe },
-    });
-
-    for (const tag of recipe.tags) {
-      expect(wrapper.text()).toContain(tag);
-    }
-  });
-
-  it('shows the cook time', async () => {
-    const wrapper = await mountSuspended(RecipeCard, {
-      props: { recipe },
-    });
-
-    expect(wrapper.text()).toContain('45');
+  it('uses the title override when provided', async () => {
+    const wrapper = await mountSuspended(RecipeCard, { props: { recipe, title: 'Sopa' } });
+    expect(wrapper.text()).toContain('Sopa');
   });
 });

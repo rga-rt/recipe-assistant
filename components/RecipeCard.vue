@@ -1,32 +1,38 @@
 <template>
-  <article
-    class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+  <NuxtLinkLocale
+    :to="`/recipe/${recipe.id}`"
+    class="block overflow-hidden rounded-2xl bg-chalk shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
   >
-    <div class="flex items-start justify-between gap-4">
-      <h3 class="text-xl font-semibold text-gray-900">{{ recipe.title }}</h3>
-      <span class="whitespace-nowrap text-sm text-gray-500">
-        {{ recipe.minutes }} {{ t('recipes.minutes') }}
-      </span>
-    </div>
-    <p class="mt-2 text-gray-600">{{ recipe.description }}</p>
-    <ul class="mt-4 flex flex-wrap gap-2">
-      <li
-        v-for="tag in recipe.tags"
-        :key="tag"
-        class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+    <div class="aspect-[4/3] w-full bg-stone-100" :class="{ 'animate-pulse': !loaded }">
+      <img
+        v-if="recipe.image"
+        :src="recipe.image"
+        :alt="displayTitle"
+        loading="lazy"
+        class="h-full w-full object-cover transition-opacity duration-300"
+        :class="loaded ? 'opacity-100' : 'opacity-0'"
+        @load="loaded = true"
       >
-        {{ tag }}
-      </li>
-    </ul>
-  </article>
+    </div>
+    <div class="p-4">
+      <h3 class="font-display font-semibold text-kale">{{ displayTitle }}</h3>
+      <p class="mt-2 text-sm text-stone-600">
+        <span class="num inline-flex items-center rounded-full bg-saffron-soft px-2 py-0.5 text-xs font-semibold text-kale">
+          {{ t('results.usesCount', { used: recipe.usedCount }) }}
+        </span>
+      </p>
+      <p v-if="recipe.missedCount > 0" class="mt-1.5 text-sm text-stone-500">
+        {{ t('results.missingCount', { count: recipe.missedCount }) }}
+      </p>
+    </div>
+  </NuxtLinkLocale>
 </template>
 
 <script setup lang="ts">
-import type { Recipe } from '~/types/recipe';
+import type { RecipeSummary } from '~/types/recipe';
 
-defineProps<{
-  recipe: Recipe;
-}>();
-
+const props = defineProps<{ recipe: RecipeSummary; title?: string }>();
 const { t } = useI18n();
+const displayTitle = computed(() => props.title ?? props.recipe.title);
+const loaded = ref(false);
 </script>
