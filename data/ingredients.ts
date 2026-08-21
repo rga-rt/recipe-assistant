@@ -23,8 +23,8 @@ export const INGREDIENT_CATEGORIES: IngredientCategory[] = [
   {
     id: 'fruits',
     ingredients: [
-      { token: 'lime', en: 'Lime', es: 'Lima' },
-      { token: 'lemon', en: 'Lemon', es: 'Limón' },
+      { token: 'lime', en: 'Lime', es: 'Limón' },
+      { token: 'lemon', en: 'Lemon', es: 'Limón amarillo' },
       { token: 'avocado', en: 'Avocado', es: 'Aguacate' },
       { token: 'mango', en: 'Mango', es: 'Mango' },
       { token: 'pineapple', en: 'Pineapple', es: 'Piña' },
@@ -113,7 +113,7 @@ export const INGREDIENT_CATEGORIES: IngredientCategory[] = [
       { token: 'vegetable oil', en: 'Vegetable oil', es: 'Aceite vegetal' },
       { token: 'salt', en: 'Salt', es: 'Sal' },
       { token: 'sugar', en: 'Sugar', es: 'Azúcar' },
-      { token: 'lime juice', en: 'Lime juice', es: 'Jugo de lima' },
+      { token: 'lime juice', en: 'Lime juice', es: 'Jugo de limón' },
       { token: 'honey', en: 'Honey', es: 'Miel' },
       { token: 'vinegar', en: 'Vinegar', es: 'Vinagre' },
       { token: 'tomato sauce', en: 'Tomato sauce', es: 'Salsa de tomate' },
