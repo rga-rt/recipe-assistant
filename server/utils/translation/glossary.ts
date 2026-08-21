@@ -15,6 +15,12 @@ export function fixCulinary(text: string): string {
   // Strip machine-translation disambiguation tags that leak into names,
   // e.g. "feta de queso (sustancia)".
   out = out.replace(/\s*\((?:sustancia|substance)\)/gi, '');
+  // Restore range separators MT drops ("4 to 5 minutes" → "4 5 minutos").
+  // Anchored to time/temperature words so it can never touch fractions ("1 1/2").
+  out = out.replace(
+    /\b(\d+)\s+(\d+)\s+(minutos?|horas?|segundos?|d[ií]as?|grados?)\b/gi,
+    '$1 a $2 $3',
+  );
   // Safety net: collapse any accidental duplicated preposition.
   return out.replace(/\ben\s+en\b/gi, 'en');
 }

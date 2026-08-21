@@ -20,6 +20,17 @@ describe('fixCulinary', () => {
     expect(fixCulinary('feta de queso (sustancia)')).toBe('feta de queso');
   });
 
+  it('restores dropped range separators for time/temperature', () => {
+    expect(fixCulinary('cocina 4 5 minutos')).toBe('cocina 4 a 5 minutos');
+    expect(fixCulinary('hornea a 180 200 grados')).toBe(
+      'hornea a 180 a 200 grados',
+    );
+  });
+
+  it('does not touch numbers that are not a time/temp range', () => {
+    expect(fixCulinary('1 1/2 tazas de harina')).toBe('1 1/2 tazas de harina');
+  });
+
   it('leaves unrelated text untouched', () => {
     expect(fixCulinary('sal y pimienta')).toBe('sal y pimienta');
   });
