@@ -3,7 +3,17 @@
     :to="`/recipe/${recipe.id}`"
     class="block overflow-hidden rounded-2xl bg-chalk shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
   >
-    <img v-if="recipe.image" :src="recipe.image" :alt="displayTitle" class="aspect-[4/3] w-full rounded-t-2xl object-cover" >
+    <div class="aspect-[4/3] w-full bg-stone-100">
+      <img
+        v-if="recipe.image"
+        :src="recipe.image"
+        :alt="displayTitle"
+        loading="lazy"
+        class="h-full w-full object-cover transition-opacity duration-300"
+        :class="loaded ? 'opacity-100' : 'opacity-0'"
+        @load="loaded = true"
+      >
+    </div>
     <div class="p-4">
       <h3 class="font-display font-semibold text-kale">{{ displayTitle }}</h3>
       <p class="mt-2 text-sm text-stone-600">
@@ -24,4 +34,5 @@ import type { RecipeSummary } from '~/types/recipe';
 const props = defineProps<{ recipe: RecipeSummary; title?: string }>();
 const { t } = useI18n();
 const displayTitle = computed(() => props.title ?? props.recipe.title);
+const loaded = ref(false);
 </script>

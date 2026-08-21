@@ -18,6 +18,7 @@
     "usesCount": "Uses {used} of your ingredients",
     "missingCount": "{count} more needed",
     "empty": "No recipes found. Try different or fewer ingredients.",
+    "loading": "Finding recipes…",
     "newSearch": "New search"
   },
   "recipe": {
@@ -27,6 +28,7 @@
     "instructions": "Instructions",
     "noInstructions": "No instructions provided.",
     "stepsNote": "Step amounts use the recipe's original units.",
+    "loading": "Loading recipe…",
     "back": "Back to results"
   },
   "favorites": {

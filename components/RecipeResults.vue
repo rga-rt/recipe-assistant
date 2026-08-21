@@ -7,8 +7,23 @@
       </button>
     </div>
 
-    <div v-if="pending" class="flex flex-col items-center gap-2 py-16 text-center">
-      <span class="font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('start.subtitle') }}</span>
+    <div v-if="pending">
+      <p class="mb-5 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">
+        {{ t('results.loading') }}
+      </p>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" aria-hidden="true">
+        <div
+          v-for="n in 8"
+          :key="n"
+          class="overflow-hidden rounded-2xl border border-stone-200 bg-chalk shadow-card"
+        >
+          <div class="aspect-[4/3] w-full animate-pulse bg-stone-100"></div>
+          <div class="space-y-2 p-4">
+            <div class="h-4 w-3/4 animate-pulse rounded bg-stone-100"></div>
+            <div class="h-3 w-1/2 animate-pulse rounded bg-stone-100"></div>
+          </div>
+        </div>
+      </div>
     </div>
     <div v-else-if="error" class="mx-auto max-w-md rounded-2xl border border-tomato/20 bg-tomato/5 p-6 text-center">
       <p class="text-kale">{{ error === 'quota' ? t('errors.quota') : t('errors.generic') }}</p>

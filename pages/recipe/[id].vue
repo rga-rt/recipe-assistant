@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="pending" class="container mx-auto flex flex-col items-center gap-2 px-4 py-16 text-center">
-      <span class="font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('start.subtitle') }}</span>
+      <span class="font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('recipe.loading') }}</span>
     </div>
     <div v-else-if="error || !recipe" class="container mx-auto px-4 py-10">
       <p class="text-kale">{{ t('errors.generic') }}</p>
