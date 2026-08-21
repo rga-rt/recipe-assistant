@@ -78,6 +78,8 @@
       "packet": "packet", "packets": "packets", "kilogram": "kg", "kilograms": "kg",
       "milligram": "mg", "milligrams": "mg", "inch": "inch", "inches": "inches",
       "smalls": "small",
+      "glass": "glass", "glasses": "glasses",
+      "fl. oz.": "fl oz", "fl. oz.s": "fl oz",
       "Tb": "tbsp", "Tbs": "tbsp"
     }
   },

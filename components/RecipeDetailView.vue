@@ -80,9 +80,35 @@ watchEffect(async () => {
   ready.value = true;
 });
 
-function unitWord(word: string): string {
+// Look up a unit word in the locale dictionary, case-insensitively (Spoonacular
+// sends forms like "Tbsps" while other units arrive lowercase). Returns the
+// translated word, or null when the term isn't a known unit.
+function unitWord(word: string): string | null {
   const words = tm('units.words') as Record<string, unknown>;
-  return words && word in words ? rt(words[word] as string) : word;
+  if (!words || !word) return null;
+  if (word in words) return rt(words[word] as string);
+  const lower = word.toLowerCase();
+  for (const key in words) {
+    if (key.toLowerCase() === lower) return rt(words[key] as string);
+  }
+  return null;
+}
+
+// English singular/plural inflection that respects sibilant endings, so we never
+// emit non-words like "glasse" (from "glasses") or "fl. oz.s".
+function singularizeUnit(w: string): string {
+  const lower = w.toLowerCase();
+  if (/(?:s|sh|ch|x|z)es$/.test(lower)) return w.slice(0, -2);
+  if (/ies$/.test(lower)) return `${w.slice(0, -3)}y`;
+  if (/ss$/.test(lower)) return w;
+  if (/s$/.test(lower)) return w.slice(0, -1);
+  return w;
+}
+function pluralizeUnit(w: string): string {
+  const lower = w.toLowerCase();
+  if (/(?:s|sh|ch|x|z)$/.test(lower)) return `${w}es`;
+  if (/[^aeiou]y$/.test(lower)) return `${w.slice(0, -1)}ies`;
+  return `${w}s`;
 }
 
 // Snap imperial volumes to the fractions a cook actually uses (⅓ cup, not 0.3).
@@ -114,20 +140,17 @@ function prettyAmount(amount: number, unitShort: string): string {
   if (Number.isInteger(amount)) return String(amount);
   return String(Math.round(amount * 10) / 10);
 }
-// Choose the singular/plural unit form from the amount: "¼ cup" / "2 cups".
-function pluralizeUnit(unitLong: string, amount: number): string {
-  if (!unitLong) return unitLong;
-  const lower = unitLong.toLowerCase();
-  const singular = lower.endsWith('s') ? lower.slice(0, -1) : lower;
-  return amount <= 1 ? singular : `${singular}s`;
-}
 function formatMeasure(ing: RecipeIngredient): string {
   const m = unitSystem.value === 'metric' ? ing.metric : ing.us;
   const rawUnit = (m.unitShort || m.unitLong || '').toLowerCase();
   // "serving"/"servings" is a placeholder unit (e.g. "salt and pepper to taste") — omit it.
   if (['serving', 'servings'].includes(rawUnit)) return '';
   const amount = prettyAmount(m.amount, m.unitShort);
-  const unit = unitWord(pluralizeUnit(m.unitLong, m.amount)) || m.unitShort;
+  // Pick the English number form that matches the amount, then translate it.
+  // Fall back to the raw unit unchanged (never an invented word) if it's unknown.
+  const raw = (m.unitLong || m.unitShort || '').trim();
+  const wanted = m.amount <= 1 ? singularizeUnit(raw) : pluralizeUnit(singularizeUnit(raw));
+  const unit = unitWord(wanted) ?? unitWord(raw) ?? raw;
   return `${amount} ${unit}`.trim();
 }
 
