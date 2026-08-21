@@ -4,7 +4,7 @@ export const INGREDIENT_CATEGORIES: IngredientCategory[] = [
   {
     id: 'vegetables',
     ingredients: [
-      { token: 'tomato', en: 'Tomato', es: 'Tomate' },
+      { token: 'tomato', en: 'Tomato', es: 'Jitomate' },
       { token: 'onion', en: 'Onion', es: 'Cebolla' },
       { token: 'garlic', en: 'Garlic', es: 'Ajo' },
       { token: 'carrot', en: 'Carrot', es: 'Zanahoria' },
