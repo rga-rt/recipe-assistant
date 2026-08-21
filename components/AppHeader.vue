@@ -33,7 +33,6 @@
 
         <!-- Desktop controls -->
         <div class="hidden items-center gap-3 sm:flex">
-          <UnitToggle />
           <LocaleSwitcher />
         </div>
 
@@ -107,16 +106,7 @@
               {{ t('nav.favorites') }}
             </NuxtLinkLocale>
           </nav>
-          <div
-            class="mt-2 flex flex-col gap-3 border-t border-stone-200 px-2 pt-4"
-          >
-            <div class="flex items-center justify-between">
-              <span
-                class="font-mono text-xs uppercase tracking-wide text-stone-500"
-                >{{ t('units.label') }}</span
-              >
-              <UnitToggle />
-            </div>
+          <div class="mt-2 border-t border-stone-200 px-2 pt-4">
             <div class="flex items-center justify-between">
               <span
                 class="font-mono text-xs uppercase tracking-wide text-stone-500"

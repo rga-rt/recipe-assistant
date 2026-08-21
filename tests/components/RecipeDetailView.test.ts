@@ -10,7 +10,6 @@ vi.mock('~/utils/favoritesDb', () => ({
 }));
 
 import RecipeDetailView from '~/components/RecipeDetailView.vue';
-import { useUnitSystem } from '~/composables/useUnitSystem';
 
 const recipe = {
   id: 1, title: 'Rice', image: '', readyInMinutes: 20, servings: 2,
@@ -23,12 +22,9 @@ const recipe = {
 };
 
 describe('RecipeDetailView', () => {
-  it('shows metric measures by default and switches to imperial', async () => {
-    useUnitSystem().setSystem('metric');
+  // Default locale is English → imperial units (unit system follows language).
+  it('renders imperial measures and the step text in English', async () => {
     const wrapper = await mountSuspended(RecipeDetailView, { props: { recipe } });
-    expect(wrapper.text()).toContain('200');
-    useUnitSystem().setSystem('imperial');
-    await wrapper.vm.$nextTick();
     expect(wrapper.text()).toContain('1');
     expect(wrapper.text()).toContain('Boil water');
   });
