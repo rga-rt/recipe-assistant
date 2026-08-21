@@ -37,7 +37,8 @@
     "title": "Your favorites",
     "empty": "No favorites yet. Open a recipe and tap Save to favorites — it'll show up here.",
     "add": "Save to favorites",
-    "remove": "Remove from favorites"
+    "remove": "Remove from favorites",
+    "cta": "Find recipes"
   },
   "units": {
     "label": "Units",

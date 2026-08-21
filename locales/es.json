@@ -37,7 +37,8 @@
     "title": "Tus favoritos",
     "empty": "Aún no hay favoritos. Abre una receta y toca Guardar en favoritos — aparecerá aquí.",
     "add": "Guardar en favoritos",
-    "remove": "Quitar de favoritos"
+    "remove": "Quitar de favoritos",
+    "cta": "Buscar recetas"
   },
   "units": {
     "label": "Unidades",

@@ -1,6 +1,7 @@
 import { sha1 } from '~/server/utils/translation/provider';
 import { getCache } from '~/server/utils/translation/cache';
 import { createMyMemoryProvider } from '~/server/utils/translation/mymemory';
+import { fixCulinary } from '~/server/utils/translation/glossary';
 
 export default defineEventHandler(async (event) => {
   const body = (await readBody(event)) as { texts?: string[]; target?: 'es' };
@@ -34,5 +35,5 @@ export default defineEventHandler(async (event) => {
     if (toCache.length) await cache.setMany(toCache);
   }
 
-  return { translations: result };
+  return { translations: result.map(fixCulinary) };
 });
