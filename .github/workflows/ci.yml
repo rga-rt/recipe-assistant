@@ -20,7 +20,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # npm install (not `npm ci`) reconciles esbuild's per-platform optional
+        # binaries, which the lockfile records inconsistently across OSes
+        # (npm/cli#4828). Scripts are needed for `nuxt prepare` (postinstall).
+        run: npm install --no-audit --no-fund
 
       - name: Lint
         run: npm run lint
