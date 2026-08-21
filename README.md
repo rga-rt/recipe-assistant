@@ -1,6 +1,6 @@
 # recipe-assistant
 
-[![CI](https://github.com/rga-rt/recipe-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/rga-rt/recipe-assistant/actions/workflows/ci.yml)
+[![CI](https://github.com/rga-rt/recipe-assistant/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rga-rt/recipe-assistant/actions/workflows/ci.yml)
 [![Nuxt 3](https://img.shields.io/badge/Nuxt-3-00DC82?logo=nuxt.js&logoColor=white)](https://nuxt.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8?logo=pwa&logoColor=white)](https://vite-pwa-org.netlify.app)
