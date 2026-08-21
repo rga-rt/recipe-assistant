@@ -18,7 +18,7 @@
     <ul v-if="ready" class="mt-4 space-y-2">
       <li v-for="(ing, i) in recipe.ingredients" :key="ing.id" class="flex items-baseline gap-2 text-kale">
         <span v-if="formatMeasure(ing)" class="num font-medium text-kale">{{ formatMeasure(ing) }}</span>
-        <span>{{ ingredientNames[i] ?? ing.name }}</span>
+        <span>{{ ingredientLabel(ing, ingredientNames[i] ?? ing.name) }}</span>
       </li>
     </ul>
     <ul v-else class="mt-4 space-y-2">
@@ -47,14 +47,20 @@
 
 <script setup lang="ts">
 import type { RecipeDetail, RecipeIngredient, FavoriteRecipe } from '~/types/recipe';
+import { cleanIngredientName, sanitizeTranslatedName, capitalizeFirst } from '~/utils/ingredientName';
+import { toMetric } from '~/utils/unitConvert';
 
 const props = defineProps<{ recipe: RecipeDetail }>();
 const { t, tm, rt, locale } = useI18n();
 const { unitSystem } = useUnitSystem();
 const { translate } = useTranslate();
 
+// Spoonacular ingredient names arrive dirty; clean them once for both the
+// English display and as the input to translation.
+const cleanNames = props.recipe.ingredients.map((i) => cleanIngredientName(i.name));
+
 const title = ref(props.recipe.title);
-const ingredientNames = ref<string[]>(props.recipe.ingredients.map((i) => i.name));
+const ingredientNames = ref<string[]>([...cleanNames]);
 const stepTexts = ref<string[]>(props.recipe.steps.map((s) => s.step));
 // English needs no translation, so it's ready immediately; Spanish is gated
 // until title/ingredients/steps all resolve, to avoid an English flash.
@@ -63,7 +69,7 @@ const ready = ref(false);
 watchEffect(async () => {
   if (locale.value !== 'es') {
     title.value = props.recipe.title;
-    ingredientNames.value = props.recipe.ingredients.map((i) => i.name);
+    ingredientNames.value = [...cleanNames];
     stepTexts.value = props.recipe.steps.map((s) => s.step);
     ready.value = true;
     return;
@@ -71,11 +77,13 @@ watchEffect(async () => {
   ready.value = false;
   const [tt, names, steps] = await Promise.all([
     translate([props.recipe.title]),
-    translate(props.recipe.ingredients.map((i) => i.name)),
+    translate(cleanNames),
     translate(props.recipe.steps.map((s) => s.step)),
   ]);
   title.value = tt[0];
-  ingredientNames.value = names;
+  // Strip MyMemory artifacts (spurious leading number word, trailing period)
+  // from ingredient names only — step text may legitimately start with a number.
+  ingredientNames.value = names.map((n, i) => sanitizeTranslatedName(cleanNames[i], n));
   stepTexts.value = steps;
   ready.value = true;
 });
@@ -141,7 +149,13 @@ function prettyAmount(amount: number, unitShort: string): string {
   return String(Math.round(amount * 10) / 10);
 }
 function formatMeasure(ing: RecipeIngredient): string {
-  const m = unitSystem.value === 'metric' ? ing.metric : ing.us;
+  let m = unitSystem.value === 'metric' ? ing.metric : ing.us;
+  // Spoonacular sometimes returns imperial units inside the metric measure
+  // (oz, fl. oz., inches). On the metric (Spanish) side, convert those.
+  if (unitSystem.value === 'metric') {
+    const converted = toMetric(m.amount, m.unitShort || m.unitLong);
+    if (converted) m = { amount: converted.amount, unitShort: converted.unit, unitLong: converted.unit };
+  }
   const rawUnit = (m.unitShort || m.unitLong || '').toLowerCase();
   // "serving"/"servings" is a placeholder unit (e.g. "salt and pepper to taste") — omit it.
   if (['serving', 'servings'].includes(rawUnit)) return '';
@@ -152,6 +166,13 @@ function formatMeasure(ing: RecipeIngredient): string {
   const wanted = m.amount <= 1 ? singularizeUnit(raw) : pluralizeUnit(singularizeUnit(raw));
   const unit = unitWord(wanted) ?? unitWord(raw) ?? raw;
   return `${amount} ${unit}`.trim();
+}
+
+// Capitalize the ingredient name only when it leads the line (no measure in
+// front). Number-led lines like "3 dientes de ajo" stay lowercase after the
+// number; placeholder items like "salt to taste" become "Salt to taste".
+function ingredientLabel(ing: RecipeIngredient, name: string): string {
+  return formatMeasure(ing) ? name : capitalizeFirst(name);
 }
 
 const favoritePayload = computed<FavoriteRecipe>(() => ({

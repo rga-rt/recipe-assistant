@@ -64,14 +64,32 @@ describe('RecipeDetailView Spanish unit rendering', () => {
     expect(text).toContain('vasos');
   });
 
-  it('handles the "fl. oz.s" abbreviation without mangling it', async () => {
+  it('handles the "fl. oz.s" abbreviation without mangling it (converts to ml)', async () => {
     const text = await ingredientLine({ amount: 8, unitShort: 'fl. oz.', unitLong: 'fl. oz.s' });
     expect(text).not.toContain('fl. oz.s');
-    expect(text).toContain('oz líq');
+    expect(text).toContain('ml');
   });
 
   it('leaves an unknown unit unchanged (no invented word, no capitalization)', async () => {
     const text = await ingredientLine({ amount: 2, unitShort: 'blorp', unitLong: 'blorps' });
     expect(text).toContain('blorps');
+  });
+
+  it('converts imperial "ounces" in the metric measure to grams (not "oz"/"onzas")', async () => {
+    const text = await ingredientLine({ amount: 24, unitShort: 'oz', unitLong: 'ounces' });
+    expect(text).toContain('680 g');
+    expect(text).not.toContain('oz');
+    expect(text).not.toContain('onzas');
+  });
+
+  it('converts "fl. oz." to millilitres and "inches" to centimetres', async () => {
+    expect(await ingredientLine({ amount: 8, unitShort: 'fl. oz.', unitLong: 'fl. oz.s' })).toContain('ml');
+    expect(await ingredientLine({ amount: 4, unitShort: 'inch', unitLong: 'inches' })).toContain('cm');
+  });
+
+  it('keeps real Spanish kitchen units (cup -> taza) un-converted', async () => {
+    const text = await ingredientLine({ amount: 1, unitShort: 'cup', unitLong: 'cup' });
+    expect(text).toContain('taza');
+    expect(text).not.toContain('ml');
   });
 });
