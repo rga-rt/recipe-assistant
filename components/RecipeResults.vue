@@ -2,7 +2,7 @@
   <div class="container mx-auto px-4 py-10">
     <div class="mb-8 flex items-center justify-between">
       <h2 class="text-2xl font-bold text-kale sm:text-3xl">{{ t('results.title') }}</h2>
-      <button class="rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goStart">
+      <button class="rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goSelect">
         {{ t('results.newSearch') }}
       </button>
     </div>
@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 const { t } = useI18n();
-const { results, pending, error, goStart, fetchRecipes } = useRecipeFinder();
+const { results, pending, error, goSelect, fetchRecipes } = useRecipeFinder();
 const { translate } = useTranslate();
 
 const titles = ref<string[]>([]);

@@ -1,0 +1,13 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Recipe Assistant">
+  <rect width="512" height="512" fill="#1C2A21"/>
+  <!-- fresh leaf rising from the bowl -->
+  <g transform="rotate(-10 256 250)">
+    <path d="M256 96 C324 152 324 230 256 280 C188 230 188 152 256 96 Z" fill="#3D7A4E"/>
+    <path d="M256 122 L256 266" stroke="#1C2A21" stroke-width="11" stroke-linecap="round" opacity="0.35"/>
+    <path d="M256 168 L296 142 M256 200 L296 178 M256 168 L216 142 M256 200 L216 178"
+          stroke="#1C2A21" stroke-width="8" stroke-linecap="round" opacity="0.3"/>
+  </g>
+  <!-- bowl -->
+  <path d="M148 288 C148 356 196 394 256 394 C316 394 364 356 364 288 Z" fill="#E7A13A"/>
+  <ellipse cx="256" cy="288" rx="108" ry="16" fill="#FBEACB"/>
+</svg>
