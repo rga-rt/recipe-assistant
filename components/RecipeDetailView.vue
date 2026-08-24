@@ -3,15 +3,13 @@
     <NuxtLinkLocale to="/" class="text-sm text-stone-500 transition hover:text-kale">← {{ t('recipe.back') }}</NuxtLinkLocale>
 
     <img v-if="recipe.image" :src="recipe.image" :alt="title" class="mt-4 aspect-[16/9] w-full rounded-2xl object-cover" >
-    <div class="mt-6 flex items-start justify-between gap-4">
-      <div class="min-w-0 flex-1">
-        <h1 v-if="ready" class="text-3xl font-bold text-kale sm:text-4xl">{{ title }}</h1>
-        <div v-else class="h-9 w-2/3 animate-pulse rounded bg-stone-100"></div>
-        <p class="num mt-2 text-sm text-stone-600">
-          {{ t('recipe.readyIn', { minutes: recipe.readyInMinutes }) }} &middot; {{ t('recipe.servings', { count: recipe.servings }, recipe.servings) }}
-        </p>
-      </div>
-      <FavoriteButton :recipe="favoritePayload" />
+    <div class="mt-6">
+      <h1 v-if="ready" class="text-3xl font-bold text-kale sm:text-4xl">{{ title }}</h1>
+      <div v-else class="h-9 w-2/3 animate-pulse rounded bg-stone-100"></div>
+      <p class="num mt-2 text-sm text-stone-600">
+        {{ t('recipe.readyIn', { minutes: recipe.readyInMinutes }) }} &middot; {{ t('recipe.servings', { count: recipe.servings }, recipe.servings) }}
+      </p>
+      <FavoriteButton :recipe="favoritePayload" class="mt-4" />
     </div>
 
     <h2 class="mt-10 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">{{ t('recipe.ingredients') }}</h2>
