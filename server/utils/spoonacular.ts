@@ -37,7 +37,7 @@ export function mapDetail(raw: any): RecipeDetail {
 
 export async function findByIngredients(ingredients: string[], apiKey: string): Promise<RecipeSummary[]> {
   const data = await $fetch<any[]>(`${BASE}/recipes/findByIngredients`, {
-    query: { ingredients: ingredients.join(','), number: 8, ranking: 1, ignorePantry: true, apiKey },
+    query: { ingredients: ingredients.join(','), number: 24, ranking: 1, ignorePantry: true, apiKey },
   });
   return data.map(mapSummary);
 }

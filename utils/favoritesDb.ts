@@ -22,7 +22,11 @@ export async function dbGetAll(): Promise<FavoriteRecipe[]> {
   return (await db()).getAll(STORE);
 }
 export async function dbPut(recipe: FavoriteRecipe): Promise<void> {
-  await (await db()).put(STORE, recipe);
+  // The recipe payload from the detail page is a Vue reactive object, which
+  // IndexedDB's structured-clone step rejects with DataCloneError. Round-trip
+  // through JSON to store a plain, clone-safe copy of this pure-data record.
+  const plain = JSON.parse(JSON.stringify(recipe)) as FavoriteRecipe;
+  await (await db()).put(STORE, plain);
 }
 export async function dbDelete(id: number): Promise<void> {
   await (await db()).delete(STORE, id);

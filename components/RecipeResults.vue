@@ -13,7 +13,7 @@
       </p>
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" aria-hidden="true">
         <div
-          v-for="n in 8"
+          v-for="n in 24"
           :key="n"
           class="overflow-hidden rounded-2xl border border-stone-200 bg-chalk shadow-card"
         >
