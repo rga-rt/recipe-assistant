@@ -95,6 +95,7 @@
   "categories": {
     "vegetables": "Verduras", "fruits": "Frutas", "proteins": "Proteínas",
     "dairy-eggs": "Lácteos y Huevos", "grains-pasta": "Granos y Pasta",
-    "legumes": "Legumbres", "herbs-spices": "Hierbas y Especias", "pantry-oils": "Despensa y Aceites"
+    "legumes": "Legumbres", "herbs-spices": "Hierbas y Especias", "pantry-oils": "Despensa y Aceites",
+    "nuts-seeds": "Nueces y Semillas"
   }
 }
