@@ -1,5 +1,7 @@
+import { computed } from 'vue';
 import type { RecipeSearchPage, RecipeSummary } from '~/types/recipe';
 import { PAGE_SIZE, rankPages } from '~/utils/recipePaging';
+import { matchCatalog } from '~/utils/catalogMatch';
 
 // Spoonacular's complexSearch offset tops out at 900 (+100 per batch).
 const MAX_RECIPES = 1000;
@@ -8,6 +10,8 @@ export function useRecipeFinder() {
   const step = useState<'start' | 'select' | 'results'>('finder-step', () => 'start');
   const selected = useState<string[]>('finder-selected', () => []);
   const cuisine = useState<string | null>('finder-cuisine', () => null);
+  // token → what the user typed, for ingredients added outside the catalog
+  const customLabels = useState<Record<string, string>>('finder-custom-labels', () => ({}));
   const results = useState<RecipeSummary[]>('finder-results', () => []);
   const total = useState<number>('finder-total', () => 0);
   const batch = useState<number>('finder-batch', () => 0);
@@ -23,12 +27,45 @@ export function useRecipeFinder() {
   );
 
   const isSelected = (token: string) => selected.value.includes(token);
-  function toggle(token: string) {
-    selected.value = isSelected(token)
-      ? selected.value.filter((t) => t !== token)
-      : [...selected.value, token];
+  function dropLabel(token: string) {
+    if (!(token in customLabels.value)) return;
+    const { [token]: _removed, ...rest } = customLabels.value;
+    void _removed;
+    customLabels.value = rest;
   }
-  const clear = () => { selected.value = []; };
+  function toggle(token: string) {
+    if (isSelected(token)) {
+      selected.value = selected.value.filter((t) => t !== token);
+      dropLabel(token);
+    } else {
+      selected.value = [...selected.value, token];
+    }
+  }
+  const clear = () => {
+    selected.value = [];
+    customLabels.value = {};
+  };
+
+  type AddResult = 'added' | 'duplicate' | 'not_found' | 'quota' | 'error';
+  async function addCustom(text: string, locale: 'en' | 'es'): Promise<AddResult> {
+    const typed = text.trim();
+    if (!typed) return 'error';
+    let token: string;
+    try {
+      ({ token } = await $fetch<{ token: string }>('/api/ingredients/resolve', {
+        query: { q: typed, locale },
+      }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- normalizing an untyped $fetch error shape
+    } catch (err: any) {
+      if (err?.statusCode === 404) return 'not_found';
+      if (err?.statusCode === 402) return 'quota';
+      return 'error';
+    }
+    if (isSelected(token)) return 'duplicate';
+    selected.value = [...selected.value, token];
+    if (!matchCatalog(token)) customLabels.value = { ...customLabels.value, [token]: typed };
+    return 'added';
+  }
   const goStart = () => { step.value = 'start'; };
   const goSelect = () => { step.value = 'select'; };
 
@@ -90,7 +127,7 @@ export function useRecipeFinder() {
   }
 
   return {
-    step, selected, cuisine, results, total, visibleCount, visible, hasMore, pending, loadingMore, error,
-    isSelected, toggle, clear, goStart, goSelect, fetchRecipes, showMore, searchAllCuisines,
+    step, selected, cuisine, customLabels, results, total, visibleCount, visible, hasMore, pending, loadingMore, error,
+    isSelected, toggle, clear, addCustom, goStart, goSelect, fetchRecipes, showMore, searchAllCuisines,
   };
 }
