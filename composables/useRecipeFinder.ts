@@ -84,8 +84,13 @@ export function useRecipeFinder() {
     visibleCount.value += PAGE_SIZE;
   }
 
+  async function searchAllCuisines() {
+    cuisine.value = null;
+    await fetchRecipes();
+  }
+
   return {
     step, selected, cuisine, results, total, visibleCount, visible, hasMore, pending, loadingMore, error,
-    isSelected, toggle, clear, goStart, goSelect, fetchRecipes, showMore,
+    isSelected, toggle, clear, goStart, goSelect, fetchRecipes, showMore, searchAllCuisines,
   };
 }

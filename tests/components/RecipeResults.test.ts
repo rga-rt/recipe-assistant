@@ -48,4 +48,22 @@ describe('RecipeResults', () => {
     const lastCall = translateMock.mock.calls.at(-1)![0];
     expect(lastCall).toHaveLength(24);
   });
+
+  it('offers "Try all cuisines" when a cuisine search is empty', async () => {
+    const f = setState(0, 0);
+    f.cuisine.value = 'thai';
+    const wrapper = await mountSuspended(RecipeResults);
+    expect(wrapper.text()).toContain('No Thai recipes with these ingredients.');
+    const btn = wrapper.find('[data-test="try-all"]');
+    expect(btn.exists()).toBe(true);
+    await btn.trigger('click');
+    expect(f.cuisine.value).toBeNull();
+  });
+
+  it('shows the plain empty message without a cuisine', async () => {
+    setState(0, 0);
+    const wrapper = await mountSuspended(RecipeResults);
+    expect(wrapper.text()).toContain('No recipes found');
+    expect(wrapper.find('[data-test="try-all"]').exists()).toBe(false);
+  });
 });

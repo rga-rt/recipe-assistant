@@ -46,7 +46,17 @@
           <span class="num text-sm font-medium text-kale">{{
             t('select.selectedCount', { count: selected.length }, selected.length)
           }}</span>
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
+            <label class="sr-only" for="cuisine-select">{{ t('cuisine.label') }}</label>
+            <select
+              id="cuisine-select"
+              v-model="cuisineModel"
+              data-test="cuisine-select"
+              class="max-w-[9.5rem] rounded-full border border-stone-300 bg-chalk px-3 py-2 text-sm text-kale transition focus:border-basil focus:outline-none sm:max-w-none"
+            >
+              <option value="">{{ t('cuisine.all') }}</option>
+              <option v-for="c in cuisineOptions" :key="c.value" :value="c.value">{{ c.label }}</option>
+            </select>
             <button
               class="rounded-full px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100"
               @click="clear"
@@ -70,10 +80,21 @@
 
 <script setup lang="ts">
 import { INGREDIENT_CATEGORIES } from '~/data/ingredients';
+import { CUISINES } from '~/data/cuisines';
 import type { CatalogIngredient } from '~/types/recipe';
 
 const { t, locale } = useI18n();
-const { selected, pending, clear, fetchRecipes, toggle } = useRecipeFinder();
+const { selected, cuisine, pending, clear, fetchRecipes, toggle } = useRecipeFinder();
+
+// '' in the <select> means All (stored as null).
+const cuisineModel = computed({
+  get: () => cuisine.value ?? '',
+  set: (v: string) => { cuisine.value = v || null; },
+});
+const cuisineOptions = computed(() =>
+  CUISINES.map((value) => ({ value, label: t(`cuisine.options.${value.replace(/ /g, '_')}`) }))
+    .sort((a, b) => a.label.localeCompare(b.label, locale.value)),
+);
 const query = ref('');
 
 const norm = (s: string) =>

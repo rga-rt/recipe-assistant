@@ -30,7 +30,9 @@
     "loading": "Finding recipes…",
     "newSearch": "New search",
     "count": "{count} recipe found | {count} recipes found",
-    "showMore": "Show more"
+    "showMore": "Show more",
+    "emptyCuisine": "No {cuisine} recipes with these ingredients.",
+    "tryAll": "Try all cuisines"
   },
   "recipe": {
     "readyIn": "Ready in {minutes} min",
@@ -93,6 +95,39 @@
     "quota": "The recipe service is busy right now (daily limit). Try again later.",
     "offline": "You're offline. Search and translation need a connection — your saved favorites still work.",
     "retry": "Retry"
+  },
+  "cuisine": {
+    "label": "Cuisine",
+    "all": "All",
+    "options": {
+      "african": "African",
+      "american": "American",
+      "asian": "Asian",
+      "british": "British",
+      "cajun": "Cajun",
+      "caribbean": "Caribbean",
+      "chinese": "Chinese",
+      "eastern_european": "Eastern European",
+      "european": "European",
+      "french": "French",
+      "german": "German",
+      "greek": "Greek",
+      "indian": "Indian",
+      "irish": "Irish",
+      "italian": "Italian",
+      "japanese": "Japanese",
+      "jewish": "Jewish",
+      "korean": "Korean",
+      "latin_american": "Latin American",
+      "mediterranean": "Mediterranean",
+      "mexican": "Mexican",
+      "middle_eastern": "Middle Eastern",
+      "nordic": "Nordic",
+      "southern": "Southern (US)",
+      "spanish": "Spanish",
+      "thai": "Thai",
+      "vietnamese": "Vietnamese"
+    }
   },
   "categories": {
     "vegetables": "Vegetables", "fruits": "Fruits", "proteins": "Proteins",

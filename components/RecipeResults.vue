@@ -37,7 +37,17 @@
       </button>
     </div>
     <div v-else-if="results.length === 0" class="mx-auto max-w-md rounded-2xl border border-stone-200 bg-chalk p-8 text-center shadow-card">
-      <p class="text-stone-600">{{ t('results.empty') }}</p>
+      <template v-if="cuisine">
+        <p class="text-stone-600">{{ t('results.emptyCuisine', { cuisine: cuisineLabel }) }}</p>
+        <button
+          data-test="try-all"
+          class="mt-4 rounded-full bg-basil px-5 py-2 text-sm font-semibold text-chalk shadow-card transition hover:bg-basil-600"
+          @click="searchAllCuisines"
+        >
+          {{ t('results.tryAll') }}
+        </button>
+      </template>
+      <p v-else class="text-stone-600">{{ t('results.empty') }}</p>
     </div>
     <template v-else>
       <div class="grid animate-fade-rise gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -64,8 +74,13 @@
 
 <script setup lang="ts">
 const { t, locale } = useI18n();
-const { results, visible, total, hasMore, pending, loadingMore, error, goSelect, fetchRecipes, showMore } =
-  useRecipeFinder();
+const {
+  results, visible, total, hasMore, pending, loadingMore, error, cuisine,
+  goSelect, fetchRecipes, showMore, searchAllCuisines,
+} = useRecipeFinder();
+const cuisineLabel = computed(() =>
+  cuisine.value ? t(`cuisine.options.${cuisine.value.replace(/ /g, '_')}`) : '',
+);
 const { translate } = useTranslate();
 
 const titles = ref<string[]>([]);

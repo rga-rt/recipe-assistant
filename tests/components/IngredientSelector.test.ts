@@ -15,4 +15,20 @@ describe('IngredientSelector', () => {
     expect((cta.element as HTMLButtonElement).disabled).toBe(false);
     expect(useRecipeFinder().selected.value).toContain('tomato');
   });
+
+  it('offers All plus the 27 cuisines and stores the choice', async () => {
+    const f = useRecipeFinder();
+    f.cuisine.value = null;
+    const wrapper = await mountSuspended(IngredientSelector);
+    const select = wrapper.find('[data-test="cuisine-select"]');
+    const options = select.findAll('option');
+    expect(options).toHaveLength(28);
+    expect(options[0].attributes('value')).toBe('');
+    expect(options[0].text()).toBe('All');
+
+    await select.setValue('thai');
+    expect(f.cuisine.value).toBe('thai');
+    await select.setValue('');
+    expect(f.cuisine.value).toBeNull();
+  });
 });

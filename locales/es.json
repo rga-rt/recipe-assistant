@@ -30,7 +30,9 @@
     "loading": "Buscando recetas…",
     "newSearch": "Nueva búsqueda",
     "count": "{count} receta encontrada | {count} recetas encontradas",
-    "showMore": "Ver más"
+    "showMore": "Ver más",
+    "emptyCuisine": "No hay recetas con estos ingredientes en la cocina «{cuisine}».",
+    "tryAll": "Buscar en todas las cocinas"
   },
   "recipe": {
     "readyIn": "Listo en {minutes} min",
@@ -93,6 +95,39 @@
     "quota": "El servicio de recetas está ocupado (límite diario). Inténtalo más tarde.",
     "offline": "Estás sin conexión. La búsqueda y la traducción necesitan conexión — tus favoritos guardados siguen funcionando.",
     "retry": "Reintentar"
+  },
+  "cuisine": {
+    "label": "Cocina",
+    "all": "Todas",
+    "options": {
+      "african": "Africana",
+      "american": "Estadounidense",
+      "asian": "Asiática",
+      "british": "Británica",
+      "cajun": "Cajún",
+      "caribbean": "Caribeña",
+      "chinese": "China",
+      "eastern_european": "Europea del Este",
+      "european": "Europea",
+      "french": "Francesa",
+      "german": "Alemana",
+      "greek": "Griega",
+      "indian": "India",
+      "irish": "Irlandesa",
+      "italian": "Italiana",
+      "japanese": "Japonesa",
+      "jewish": "Judía",
+      "korean": "Coreana",
+      "latin_american": "Latinoamericana",
+      "mediterranean": "Mediterránea",
+      "mexican": "Mexicana",
+      "middle_eastern": "Medio oriental",
+      "nordic": "Nórdica",
+      "southern": "Sureña (EE. UU.)",
+      "spanish": "Española",
+      "thai": "Tailandesa",
+      "vietnamese": "Vietnamita"
+    }
   },
   "categories": {
     "vegetables": "Verduras", "fruits": "Frutas", "proteins": "Proteínas",

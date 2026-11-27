@@ -114,4 +114,13 @@ describe('useRecipeFinder', () => {
     f.visibleCount.value = 1000;
     expect(f.hasMore.value).toBe(false);
   });
+
+  it('searchAllCuisines resets cuisine and refetches without it', async () => {
+    const f = reset();
+    f.toggle('egg');
+    f.cuisine.value = 'thai';
+    await f.searchAllCuisines();
+    expect(f.cuisine.value).toBeNull();
+    expect(calls.at(-1)).not.toHaveProperty('cuisine');
+  });
 });
