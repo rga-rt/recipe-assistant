@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- mappers normalize untyped upstream Spoonacular JSON */
-import type { RecipeSummary, RecipeDetail, Measure } from '~/types/recipe';
+import type { RecipeSummary, RecipeDetail, Measure, RecipeSearchPage } from '~/types/recipe';
 
 const BASE = 'https://api.spoonacular.com';
 
@@ -35,11 +35,39 @@ export function mapDetail(raw: any): RecipeDetail {
   };
 }
 
-export async function findByIngredients(ingredients: string[], apiKey: string): Promise<RecipeSummary[]> {
-  const data = await $fetch<any[]>(`${BASE}/recipes/findByIngredients`, {
-    query: { ingredients: ingredients.join(','), number: 24, ranking: 1, ignorePantry: true, apiKey },
-  });
-  return data.map(mapSummary);
+export const BATCH_SIZE = 100;
+
+export async function searchRecipes(opts: {
+  ingredients: string[];
+  cuisine?: string;
+  offset: number;
+  apiKey: string;
+}): Promise<RecipeSearchPage> {
+  const base: Record<string, unknown> = {
+    includeIngredients: opts.ingredients.join(','),
+    ...(opts.cuisine ? { cuisine: opts.cuisine } : {}),
+    sort: 'max-used-ingredients',
+    fillIngredients: true,
+    ignorePantry: true,
+    number: BATCH_SIZE,
+    offset: opts.offset,
+    apiKey: opts.apiKey,
+  };
+  const call = (query: Record<string, unknown>) =>
+    $fetch<any>(`${BASE}/recipes/complexSearch`, { query });
+
+  let data = await call(base);
+  // Spoonacular quirk: some small cuisine queries return nothing when sorted
+  // by max-used-ingredients but do return matches unsorted.
+  if (opts.offset === 0 && !(data?.results?.length)) {
+    const { sort: _sort, ...unsorted } = base;
+    void _sort;
+    data = await call(unsorted);
+  }
+  return {
+    total: data?.totalResults ?? 0,
+    recipes: (data?.results ?? []).map(mapSummary),
+  };
 }
 
 export async function getRecipe(id: number, apiKey: string): Promise<RecipeDetail> {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mapSummary, mapDetail } from '~/server/utils/spoonacular';
 
 describe('spoonacular mappers', () => {
-  it('mapSummary normalizes findByIngredients item', () => {
+  it('mapSummary normalizes a complexSearch item', () => {
     const raw = { id: 5, title: 'Soup', image: 'http://x/5.jpg', usedIngredientCount: 3, missedIngredientCount: 1 };
     expect(mapSummary(raw)).toEqual({ id: 5, title: 'Soup', image: 'http://x/5.jpg', usedCount: 3, missedCount: 1 });
   });

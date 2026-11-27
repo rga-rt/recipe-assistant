@@ -70,46 +70,74 @@ describe('GET /api/recipes/by-ingredients', () => {
     hoistedCache.cache = hoistedCache.makeCache();
   });
 
-  it('returns normalized summaries', async () => {
-    hoisted.fetchMock.mockResolvedValue([
-      { id: 1, title: 'A', image: 'i', usedIngredientCount: 2, missedIngredientCount: 0 },
-    ]);
-    const res = await handler({ context: { query: { ingredients: 'egg,rice' } } } as any);
-    expect(res).toEqual([{ id: 1, title: 'A', image: 'i', usedCount: 2, missedCount: 0 }]);
+  const raw = (id: number) => ({ id, title: `R${id}`, image: 'i', usedIngredientCount: 2, missedIngredientCount: 0 });
+  const summary = (id: number) => ({ id, title: `R${id}`, image: 'i', usedCount: 2, missedCount: 0 });
+  const q = (query: Record<string, string>) => ({ context: { query } }) as any;
+
+  it('returns { total, recipes } from complexSearch', async () => {
+    hoisted.fetchMock.mockResolvedValue({ totalResults: 1, results: [raw(1)] });
+    const res = await handler(q({ ingredients: 'egg,rice' }));
+    expect(res).toEqual({ total: 1, recipes: [summary(1)] });
     expect(hoisted.fetchMock).toHaveBeenCalledOnce();
+    expect(hoisted.fetchMock.mock.calls[0][0]).toMatch(/complexSearch$/);
   });
 
   it('throws 400 when ingredients missing', async () => {
-    await expect(handler({ context: { query: {} } } as any)).rejects.toMatchObject({ statusCode: 400 });
+    await expect(handler(q({}))).rejects.toMatchObject({ statusCode: 400 });
   });
 
-  it('cache miss: calls Spoonacular once and stores the result under the sorted key', async () => {
-    hoisted.fetchMock.mockResolvedValue([
-      { id: 2, title: 'B', image: 'i', usedIngredientCount: 1, missedIngredientCount: 1 },
-    ]);
-    const res = await handler({ context: { query: { ingredients: 'rice,egg' } } } as any);
-    expect(res).toEqual([{ id: 2, title: 'B', image: 'i', usedCount: 1, missedCount: 1 }]);
+  it('caches batch 0 under the sorted key and serves repeats from cache', async () => {
+    hoisted.fetchMock.mockResolvedValue({ totalResults: 300, results: Array.from({ length: 100 }, (_, i) => raw(i)) });
+    const first = await handler(q({ ingredients: 'rice,egg' }));
+    const second = await handler(q({ ingredients: 'egg, rice' }));
     expect(hoisted.fetchMock).toHaveBeenCalledOnce();
-    expect(hoistedCache.cache.set).toHaveBeenCalledOnce();
-    // ingredients sorted alphabetically regardless of input order
-    expect(await hoistedCache.cache.get('search:egg,rice')).toEqual(res);
+    const cached = (await hoistedCache.cache.get('search:all:egg,rice:0')) as any;
+    expect(cached.recipes).toHaveLength(100);
+    expect(first.total).toBe(300);
+    expect(second.recipes.map((r: any) => r.id).sort((a: number, b: number) => a - b)).toEqual(
+      cached.recipes.map((r: any) => r.id).sort((a: number, b: number) => a - b),
+    );
   });
 
-  it('cache hit: returns cached value without calling Spoonacular, ignoring ingredient order', async () => {
-    const cached = [{ id: 9, title: 'Cached', image: 'i', usedCount: 3, missedCount: 0 }];
-    await hoistedCache.cache.set('search:egg,rice', cached, 1000);
+  it('shuffles batch 0 between requests without changing the cache', async () => {
+    hoisted.fetchMock.mockResolvedValue({ totalResults: 100, results: Array.from({ length: 100 }, (_, i) => raw(i)) });
+    const a = (await handler(q({ ingredients: 'egg' }))).recipes.map((r: any) => r.id);
+    const b = (await handler(q({ ingredients: 'egg' }))).recipes.map((r: any) => r.id);
+    expect(a).not.toEqual(b);
+    const cached = (await hoistedCache.cache.get('search:all:egg:0')) as any;
+    expect(cached.recipes.map((r: any) => r.id)).toEqual(Array.from({ length: 100 }, (_, i) => i));
+  });
 
-    const res = await handler({ context: { query: { ingredients: 'rice, egg' } } } as any);
-    expect(res).toEqual(cached);
+  it('uses a separate cache entry per cuisine', async () => {
+    hoisted.fetchMock.mockResolvedValue({ totalResults: 1, results: [raw(1)] });
+    await handler(q({ ingredients: 'egg,rice', cuisine: 'thai' }));
+    await handler(q({ ingredients: 'egg,rice' }));
+    expect(hoisted.fetchMock).toHaveBeenCalledTimes(2);
+    expect((hoisted.fetchMock.mock.calls[0][1] as any).query.cuisine).toBe('thai');
+    expect(await hoistedCache.cache.get('search:thai:egg,rice:0')).not.toBeNull();
+    expect(await hoistedCache.cache.get('search:all:egg,rice:0')).not.toBeNull();
+  });
+
+  it('batch=2 requests offset 200 and keeps API order', async () => {
+    hoisted.fetchMock.mockResolvedValue({ totalResults: 500, results: Array.from({ length: 100 }, (_, i) => raw(200 + i)) });
+    const res = await handler(q({ ingredients: 'egg', batch: '2' }));
+    expect((hoisted.fetchMock.mock.calls[0][1] as any).query.offset).toBe(200);
+    expect(res.recipes.map((r: any) => r.id)).toEqual(Array.from({ length: 100 }, (_, i) => 200 + i));
+    expect(await hoistedCache.cache.get('search:all:egg:2')).not.toBeNull();
+  });
+
+  it('rejects an unknown cuisine with 400', async () => {
+    await expect(handler(q({ ingredients: 'egg', cuisine: 'martian' }))).rejects.toMatchObject({ statusCode: 400 });
     expect(hoisted.fetchMock).not.toHaveBeenCalled();
+  });
+
+  it.each(['10', '-1', 'abc'])('rejects batch=%s with 400', async (batch) => {
+    await expect(handler(q({ ingredients: 'egg', batch }))).rejects.toMatchObject({ statusCode: 400 });
   });
 
   it('does not cache on upstream error (402)', async () => {
     hoisted.fetchMock.mockRejectedValue({ response: { status: 402 } });
-    await expect(
-      handler({ context: { query: { ingredients: 'egg,rice' } } } as any),
-    ).rejects.toMatchObject({ statusCode: 402 });
+    await expect(handler(q({ ingredients: 'egg,rice' }))).rejects.toMatchObject({ statusCode: 402 });
     expect(hoistedCache.cache.set).not.toHaveBeenCalled();
-    expect(await hoistedCache.cache.get('search:egg,rice')).toBeNull();
   });
 });
