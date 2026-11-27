@@ -28,20 +28,29 @@ describe('IngredientSelector', () => {
     expect(useRecipeFinder().selected.value).toContain('tomato');
   });
 
-  it('offers All plus the 27 cuisines and stores the choice', async () => {
+  it('offers All plus the 27 cuisines as single-select pills', async () => {
     const f = useRecipeFinder();
     f.cuisine.value = null;
     const wrapper = await mountSuspended(IngredientSelector);
-    const select = wrapper.find('[data-test="cuisine-select"]');
-    const options = select.findAll('option');
-    expect(options).toHaveLength(28);
-    expect(options[0].attributes('value')).toBe('');
-    expect(options[0].text()).toBe('All');
+    const pills = wrapper.findAll('[data-test^="cuisine-"]');
+    expect(pills).toHaveLength(28);
+    expect(pills[0].attributes('data-test')).toBe('cuisine-all');
+    expect(pills[0].text()).toBe('All');
+    expect(pills[0].attributes('aria-checked')).toBe('true');
 
-    await select.setValue('thai');
+    await wrapper.find('[data-test="cuisine-thai"]').trigger('click');
     expect(f.cuisine.value).toBe('thai');
-    await select.setValue('');
+    expect(wrapper.find('[data-test="cuisine-thai"]').attributes('aria-checked')).toBe('true');
+    expect(wrapper.find('[data-test="cuisine-all"]').attributes('aria-checked')).toBe('false');
+
+    await wrapper.find('[data-test="cuisine-all"]').trigger('click');
     expect(f.cuisine.value).toBeNull();
+  });
+
+  it('keeps the bottom bar to count, Clear and Get recipes (no cuisine dropdown)', async () => {
+    const wrapper = await mountSuspended(IngredientSelector);
+    expect(wrapper.find('select').exists()).toBe(false);
+    expect(wrapper.find('[data-test="get-recipes"]').exists()).toBe(true);
   });
 
   it('shows an Add button for text that is not a catalog name', async () => {
