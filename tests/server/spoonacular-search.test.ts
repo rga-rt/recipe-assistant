@@ -10,7 +10,7 @@ beforeAll(async () => {
   ({ searchRecipes } = await import('~/server/utils/spoonacular'));
 });
 
-const raw = { id: 1, title: 'A', image: 'i', usedIngredientCount: 2, missedIngredientCount: 1 };
+const raw = { id: 1, title: 'A', image: 'i', usedIngredientCount: 2, missedIngredientCount: 1, readyInMinutes: 25, aggregateLikes: 1200, healthScore: 64.5 };
 
 describe('searchRecipes', () => {
   beforeEach(() => fetchMock.mockReset());
@@ -24,6 +24,7 @@ describe('searchRecipes', () => {
       includeIngredients: 'egg,rice',
       sort: 'max-used-ingredients',
       fillIngredients: true,
+      addRecipeInformation: true,
       ignorePantry: true,
       number: 100,
       offset: 0,
@@ -44,7 +45,7 @@ describe('searchRecipes', () => {
     const page = await searchRecipes({ ingredients: ['egg'], offset: 0, apiKey: 'K' });
     expect(page).toEqual({
       total: 2304,
-      recipes: [{ id: 1, title: 'A', image: 'i', usedCount: 2, missedCount: 1 }],
+      recipes: [{ id: 1, title: 'A', image: 'i', usedCount: 2, missedCount: 1, readyInMinutes: 25, likes: 1200, healthScore: 64.5 }],
     });
   });
 

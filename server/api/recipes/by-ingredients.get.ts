@@ -30,7 +30,8 @@ export default defineEventHandler(async (event) => {
   const apiKey = useRuntimeConfig().spoonacularApiKey;
   const list = ingredients.split(',').map((s) => s.trim()).filter(Boolean);
   const cache = getJsonCache('recipes');
-  const key = `search:${cuisineValue ?? 'all'}:${[...list].sort().join(',')}:${batch}`;
+  // v2: pages include readyInMinutes/likes/healthScore for client-side sorting.
+  const key = `search:v2:${cuisineValue ?? 'all'}:${[...list].sort().join(',')}:${batch}`;
 
   let page = await cache.get<RecipeSearchPage>(key);
   if (!page) {

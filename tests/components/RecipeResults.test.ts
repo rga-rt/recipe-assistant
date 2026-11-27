@@ -20,6 +20,7 @@ function setState(n: number, total: number) {
   f.total.value = total;
   f.visibleCount.value = 24;
   f.loadMoreError.value = null;
+  f.sort.value = 'best';
   return f;
 }
 
@@ -75,5 +76,26 @@ describe('RecipeResults', () => {
     expect(wrapper.findAll('a[href*="/recipe/"]')).toHaveLength(24);
     expect(wrapper.find('[data-test="load-more-error"]').text()).toContain('Something went wrong');
     expect(wrapper.find('[data-test="show-more"]').exists()).toBe(true);
+  });
+
+  it('has a sort dropdown with the five options and shows the matching card detail', async () => {
+    const f = setState(0, 2);
+    f.results.value = [
+      { id: 1, title: 'Slow', image: '', usedCount: 1, missedCount: 0, readyInMinutes: 90 },
+      { id: 2, title: 'Fast', image: '', usedCount: 1, missedCount: 0, readyInMinutes: 15 },
+    ];
+    const wrapper = await mountSuspended(RecipeResults);
+    const select = wrapper.find('[data-test="sort-select"]');
+    // Native arrow is hidden in favour of the app's own chevron.
+    expect(select.classes()).toContain('appearance-none');
+    expect(wrapper.find('[data-test="sort-chevron"]').exists()).toBe(true);
+    expect(select.findAll('option').map((o) => o.attributes('value'))).toEqual([
+      'best', 'fewest-missing', 'quickest', 'popular', 'healthiest',
+    ]);
+    await select.setValue('quickest');
+    expect(f.sort.value).toBe('quickest');
+    await new Promise((r) => setTimeout(r, 0));
+    const cards = wrapper.findAll('a[href*="/recipe/"]');
+    expect(cards[0].text()).toContain('15 min');
   });
 });

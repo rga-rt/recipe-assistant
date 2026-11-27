@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import type { RecipeSearchPage, RecipeSummary } from '~/types/recipe';
-import { PAGE_SIZE, rankPages } from '~/utils/recipePaging';
+import { PAGE_SIZE } from '~/utils/recipePaging';
+import { sortRecipes, type RecipeSort } from '~/utils/recipeSort';
 import { matchCatalog } from '~/utils/catalogMatch';
 
 // Spoonacular's complexSearch offset tops out at 900 (+100 per batch).
@@ -13,6 +14,7 @@ export function useRecipeFinder() {
   // token → what the user typed, for ingredients added outside the catalog
   const customLabels = useState<Record<string, string>>('finder-custom-labels', () => ({}));
   const results = useState<RecipeSummary[]>('finder-results', () => []);
+  const sort = useState<RecipeSort>('finder-sort', () => 'best');
   const total = useState<number>('finder-total', () => 0);
   const batch = useState<number>('finder-batch', () => 0);
   const visibleCount = useState<number>('finder-visible', () => PAGE_SIZE);
@@ -25,7 +27,7 @@ export function useRecipeFinder() {
   const generation = useState<number>('finder-generation', () => 0);
 
   const available = computed(() => Math.min(total.value, MAX_RECIPES));
-  const visible = computed(() => rankPages(results.value).slice(0, visibleCount.value));
+  const visible = computed(() => sortRecipes(results.value, sort.value).slice(0, visibleCount.value));
   const hasMore = computed(
     () => visibleCount.value < results.value.length || results.value.length < available.value,
   );
@@ -142,7 +144,7 @@ export function useRecipeFinder() {
   }
 
   return {
-    step, selected, cuisine, customLabels, results, total, visibleCount, visible, hasMore, pending, loadingMore, error, loadMoreError,
+    step, selected, cuisine, customLabels, results, sort, total, visibleCount, visible, hasMore, pending, loadingMore, error, loadMoreError,
     isSelected, toggle, clear, addCustom, goStart, goSelect, fetchRecipes, showMore, searchAllCuisines,
   };
 }

@@ -132,6 +132,21 @@
       "vietnamese": "Vietnamese"
     }
   },
+  "sort": {
+    "label": "Sort by",
+    "options": {
+      "best": "Best match",
+      "fewest-missing": "Fewest missing",
+      "quickest": "Quickest",
+      "popular": "Most popular",
+      "healthiest": "Healthiest"
+    },
+    "detail": {
+      "quickest": "{minutes} min",
+      "popular": "♥ {count}",
+      "healthiest": "Health score {score}"
+    }
+  },
   "categories": {
     "vegetables": "Vegetables", "fruits": "Fruits", "proteins": "Proteins",
     "dairy-eggs": "Dairy & Eggs", "grains-pasta": "Grains & Pasta",

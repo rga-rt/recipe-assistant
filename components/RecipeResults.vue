@@ -1,15 +1,39 @@
 <template>
   <div class="container mx-auto px-4 py-10">
-    <div class="mb-8 flex items-start justify-between gap-3">
-      <div>
+    <div class="mb-8">
+      <div class="flex items-start justify-between gap-3">
         <h2 class="text-2xl font-bold text-kale sm:text-3xl">{{ t('results.title') }}</h2>
-        <p v-if="!pending && !error && results.length" class="num mt-1 text-sm text-stone-500" data-test="results-count">
+        <button class="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goSelect">
+          {{ t('results.newSearch') }}
+        </button>
+      </div>
+      <div v-if="!pending && !error && results.length" class="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <p class="num text-sm text-stone-500" data-test="results-count">
           {{ t('results.count', { count: total.toLocaleString(locale) }, total) }}
         </p>
+        <label class="flex items-center gap-2 text-sm text-stone-600">
+          <span class="whitespace-nowrap">{{ t('sort.label') }}</span>
+          <span class="relative inline-flex">
+            <select
+              v-model="sort"
+              data-test="sort-select"
+              class="appearance-none rounded-full border border-stone-300 bg-chalk py-1.5 pl-3.5 pr-9 text-sm font-medium text-kale transition hover:border-basil focus:border-basil focus:outline-none"
+            >
+              <option v-for="s in RECIPE_SORTS" :key="s" :value="s">{{ t(`sort.options.${s}`) }}</option>
+            </select>
+            <!-- Custom chevron replaces the browser's native arrow. -->
+            <svg
+              data-test="sort-chevron"
+              class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-basil"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </label>
       </div>
-      <button class="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goSelect">
-        {{ t('results.newSearch') }}
-      </button>
     </div>
 
     <div v-if="pending">
@@ -56,6 +80,7 @@
           :key="r.id"
           :recipe="r"
           :title="titles[i]"
+          :detail="detailFor(r)"
         />
       </div>
       <div v-if="hasMore" class="mt-10 flex flex-col items-center gap-3">
@@ -76,14 +101,25 @@
 </template>
 
 <script setup lang="ts">
+import { RECIPE_SORTS } from '~/utils/recipeSort';
+import type { RecipeSummary } from '~/types/recipe';
+
 const { t, locale } = useI18n();
 const {
-  results, visible, total, hasMore, pending, loadingMore, error, loadMoreError, cuisine,
+  sort, results, visible, total, hasMore, pending, loadingMore, error, loadMoreError, cuisine,
   goSelect, fetchRecipes, showMore, searchAllCuisines,
 } = useRecipeFinder();
 const cuisineLabel = computed(() =>
   cuisine.value ? t(`cuisine.options.${cuisine.value.replace(/ /g, '_')}`) : '',
 );
+// The card shows the value the active sort is ranking by, so the order makes sense.
+function detailFor(r: RecipeSummary): string | undefined {
+  if (sort.value === 'quickest' && r.readyInMinutes) return t('sort.detail.quickest', { minutes: r.readyInMinutes });
+  if (sort.value === 'popular' && r.likes) return t('sort.detail.popular', { count: r.likes.toLocaleString(locale.value) });
+  if (sort.value === 'healthiest' && r.healthScore) return t('sort.detail.healthiest', { score: Math.round(r.healthScore) });
+  return undefined;
+}
+
 const { translate } = useTranslate();
 
 const titles = ref<string[]>([]);
