@@ -25,6 +25,35 @@
       <p v-if="addMessage" class="mt-2 text-sm text-tomato" role="status">{{ addMessage }}</p>
     </div>
 
+    <section class="mt-8">
+      <h3 id="cuisine-heading" class="mb-3 flex items-center gap-3 font-mono text-xs font-semibold uppercase tracking-wider text-stone-500">
+        {{ t('cuisine.label') }}
+        <span class="h-px flex-1 bg-stone-200" aria-hidden="true"></span>
+      </h3>
+      <!-- One swipeable row on phones (keeps ingredients on the first screen); wraps from sm up. -->
+      <div
+        ref="cuisineRow"
+        role="radiogroup"
+        aria-labelledby="cuisine-heading"
+        class="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
+      >
+        <button
+          v-for="c in cuisinePills"
+          :key="c.value || 'all'"
+          role="radio"
+          :aria-checked="cuisine === c.value"
+          :data-test="`cuisine-${c.value ? c.value.replace(/ /g, '-') : 'all'}`"
+          class="chip shrink-0 snap-start whitespace-nowrap"
+          :class="cuisine === c.value
+            ? 'border-basil bg-basil text-chalk shadow-sm'
+            : 'border-stone-300 bg-chalk text-kale hover:border-basil'"
+          @click="cuisine = c.value"
+        >
+          {{ c.label }}
+        </button>
+      </div>
+    </section>
+
     <div class="mt-6">
       <IngredientCategory
         v-for="cat in filteredCategories"
@@ -54,34 +83,30 @@
             <span aria-hidden="true" class="ml-0.5 text-stone-500">×</span>
           </button>
         </div>
-        <div class="flex items-center justify-between gap-4">
-          <span class="num text-sm font-medium text-kale">{{
+        <div class="flex items-center justify-between gap-3">
+          <!-- On phones the chips above already show the selection; the count moves into the button. -->
+          <span class="num hidden whitespace-nowrap text-sm font-medium text-kale sm:inline">{{
             t('select.selectedCount', { count: selected.length }, selected.length)
           }}</span>
-          <div class="flex items-center gap-2">
-            <label class="sr-only" for="cuisine-select">{{ t('cuisine.label') }}</label>
-            <select
-              id="cuisine-select"
-              v-model="cuisineModel"
-              data-test="cuisine-select"
-              class="max-w-[9.5rem] rounded-full border border-stone-300 bg-chalk px-3 py-2 text-sm text-kale transition focus:border-basil focus:outline-none sm:max-w-none"
-            >
-              <option value="">{{ t('cuisine.all') }}</option>
-              <option v-for="c in cuisineOptions" :key="c.value" :value="c.value">{{ c.label }}</option>
-            </select>
+          <div class="flex flex-1 items-center justify-end gap-2 sm:flex-none">
             <button
-              class="rounded-full px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100"
+              class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100"
               @click="clear"
             >
               {{ t('select.clear') }}
             </button>
             <button
               data-test="get-recipes"
-              class="rounded-full bg-basil px-5 py-2 text-sm font-semibold text-chalk shadow-card transition hover:bg-basil-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-basil disabled:hover:shadow-card"
+              class="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-basil px-5 py-2 text-sm font-semibold text-chalk shadow-card transition hover:bg-basil-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-basil disabled:hover:shadow-card"
               :disabled="selected.length === 0 || pending"
               @click="fetchRecipes"
             >
               {{ t('select.getRecipes') }}
+              <span
+                v-if="selected.length"
+                class="num inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-chalk px-1.5 text-xs font-semibold text-basil sm:hidden"
+                aria-hidden="true"
+              >{{ selected.length }}</span>
             </button>
           </div>
         </div>
@@ -125,15 +150,21 @@ async function addTyped() {
     : t('errors.generic');
 }
 
-// '' in the <select> means All (stored as null).
-const cuisineModel = computed({
-  get: () => cuisine.value ?? '',
-  set: (v: string) => { cuisine.value = v || null; },
-});
-const cuisineOptions = computed(() =>
-  CUISINES.map((value) => ({ value, label: t(`cuisine.options.${value.replace(/ /g, '_')}`) }))
+// Keep the chosen cuisine visible in the swipeable row (e.g. when coming back from results).
+const cuisineRow = ref<HTMLElement | null>(null);
+function revealCuisine() {
+  const el = cuisineRow.value?.querySelector<HTMLElement>('[aria-checked="true"]');
+  el?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+}
+onMounted(revealCuisine);
+watch(cuisine, () => nextTick(revealCuisine));
+
+// All first (null), then cuisines sorted by the current locale's label.
+const cuisinePills = computed<{ value: string | null; label: string }[]>(() => [
+  { value: null, label: t('cuisine.all') },
+  ...CUISINES.map((value) => ({ value: value as string | null, label: t(`cuisine.options.${value.replace(/ /g, '_')}`) }))
     .sort((a, b) => a.label.localeCompare(b.label, locale.value)),
-);
+]);
 
 const filteredCategories = computed(() => {
   const q = norm(query.value.trim());

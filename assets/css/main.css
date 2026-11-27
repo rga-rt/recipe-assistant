@@ -14,6 +14,12 @@
   .num  { @apply font-mono tabular-nums; }
 }
 
+@layer utilities {
+  /* Horizontal pill rows on mobile scroll by swipe; hide the scrollbar. */
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
+
 .page-enter-active,
 .page-leave-active {
   transition: opacity 0.18s ease;

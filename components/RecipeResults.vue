@@ -1,13 +1,13 @@
 <template>
   <div class="container mx-auto px-4 py-10">
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-8 flex items-start justify-between gap-3">
       <div>
         <h2 class="text-2xl font-bold text-kale sm:text-3xl">{{ t('results.title') }}</h2>
         <p v-if="!pending && !error && results.length" class="num mt-1 text-sm text-stone-500" data-test="results-count">
           {{ t('results.count', { count: total.toLocaleString(locale) }, total) }}
         </p>
       </div>
-      <button class="rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goSelect">
+      <button class="shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goSelect">
         {{ t('results.newSearch') }}
       </button>
     </div>
