@@ -132,6 +132,21 @@
       "vietnamese": "Vietnamita"
     }
   },
+  "sort": {
+    "label": "Ordenar por",
+    "options": {
+      "best": "Mejor coincidencia",
+      "fewest-missing": "Menos faltantes",
+      "quickest": "Más rápidas",
+      "popular": "Más populares",
+      "healthiest": "Más saludables"
+    },
+    "detail": {
+      "quickest": "{minutes} min",
+      "popular": "♥ {count}",
+      "healthiest": "Puntaje de salud {score}"
+    }
+  },
   "categories": {
     "vegetables": "Verduras", "fruits": "Frutas", "proteins": "Proteínas",
     "dairy-eggs": "Lácteos y Huevos", "grains-pasta": "Granos y Pasta",

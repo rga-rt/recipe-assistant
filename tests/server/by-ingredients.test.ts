@@ -91,7 +91,7 @@ describe('GET /api/recipes/by-ingredients', () => {
     const first = await handler(q({ ingredients: 'rice,egg' }));
     const second = await handler(q({ ingredients: 'egg, rice' }));
     expect(hoisted.fetchMock).toHaveBeenCalledOnce();
-    const cached = (await hoistedCache.cache.get('search:all:egg,rice:0')) as any;
+    const cached = (await hoistedCache.cache.get('search:v2:all:egg,rice:0')) as any;
     expect(cached.recipes).toHaveLength(100);
     expect(first.total).toBe(300);
     expect(second.recipes.map((r: any) => r.id).sort((a: number, b: number) => a - b)).toEqual(
@@ -104,7 +104,7 @@ describe('GET /api/recipes/by-ingredients', () => {
     const a = (await handler(q({ ingredients: 'egg' }))).recipes.map((r: any) => r.id);
     const b = (await handler(q({ ingredients: 'egg' }))).recipes.map((r: any) => r.id);
     expect(a).not.toEqual(b);
-    const cached = (await hoistedCache.cache.get('search:all:egg:0')) as any;
+    const cached = (await hoistedCache.cache.get('search:v2:all:egg:0')) as any;
     expect(cached.recipes.map((r: any) => r.id)).toEqual(Array.from({ length: 100 }, (_, i) => i));
   });
 
@@ -114,8 +114,8 @@ describe('GET /api/recipes/by-ingredients', () => {
     await handler(q({ ingredients: 'egg,rice' }));
     expect(hoisted.fetchMock).toHaveBeenCalledTimes(2);
     expect((hoisted.fetchMock.mock.calls[0][1] as any).query.cuisine).toBe('thai');
-    expect(await hoistedCache.cache.get('search:thai:egg,rice:0')).not.toBeNull();
-    expect(await hoistedCache.cache.get('search:all:egg,rice:0')).not.toBeNull();
+    expect(await hoistedCache.cache.get('search:v2:thai:egg,rice:0')).not.toBeNull();
+    expect(await hoistedCache.cache.get('search:v2:all:egg,rice:0')).not.toBeNull();
   });
 
   it('batch=2 requests offset 200 and keeps API order', async () => {
@@ -123,7 +123,7 @@ describe('GET /api/recipes/by-ingredients', () => {
     const res = await handler(q({ ingredients: 'egg', batch: '2' }));
     expect((hoisted.fetchMock.mock.calls[0][1] as any).query.offset).toBe(200);
     expect(res.recipes.map((r: any) => r.id)).toEqual(Array.from({ length: 100 }, (_, i) => 200 + i));
-    expect(await hoistedCache.cache.get('search:all:egg:2')).not.toBeNull();
+    expect(await hoistedCache.cache.get('search:v2:all:egg:2')).not.toBeNull();
   });
 
   it('rejects an unknown cuisine with 400', async () => {

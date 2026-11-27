@@ -1,6 +1,10 @@
 export interface CatalogIngredient { token: string; en: string; es: string }
 export interface IngredientCategory { id: string; ingredients: CatalogIngredient[] }
-export interface RecipeSummary { id: number; title: string; image: string; usedCount: number; missedCount: number }
+export interface RecipeSummary {
+  id: number; title: string; image: string; usedCount: number; missedCount: number;
+  // From addRecipeInformation; absent on older cached data or fallback queries.
+  readyInMinutes?: number; likes?: number; healthScore?: number;
+}
 export interface RecipeSearchPage { total: number; recipes: RecipeSummary[] }
 export interface Measure { amount: number; unitShort: string; unitLong: string }
 export interface RecipeIngredient { id: number; name: string; us: Measure; metric: Measure }

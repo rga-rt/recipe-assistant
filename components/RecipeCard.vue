@@ -16,6 +16,7 @@
     </div>
     <div class="p-4">
       <h3 class="font-display font-semibold text-kale">{{ displayTitle }}</h3>
+      <p v-if="detail" class="num mt-1 text-xs font-medium text-basil" data-test="card-detail">{{ detail }}</p>
       <p v-if="recipe.usedCount > 0" class="mt-2 text-sm text-stone-600">
         <span class="num inline-flex items-center rounded-full bg-saffron-soft px-2 py-0.5 text-xs font-semibold text-kale">
           {{ t('results.usesCount', { used: recipe.usedCount }) }}
@@ -31,7 +32,7 @@
 <script setup lang="ts">
 import type { RecipeSummary } from '~/types/recipe';
 
-const props = defineProps<{ recipe: RecipeSummary; title?: string }>();
+const props = defineProps<{ recipe: RecipeSummary; title?: string; detail?: string }>();
 const { t } = useI18n();
 const displayTitle = computed(() => props.title ?? props.recipe.title);
 const loaded = ref(false);

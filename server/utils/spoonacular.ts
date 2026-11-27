@@ -10,6 +10,9 @@ export function mapSummary(raw: any): RecipeSummary {
     image: raw.image ?? '',
     usedCount: raw.usedIngredientCount ?? 0,
     missedCount: raw.missedIngredientCount ?? 0,
+    readyInMinutes: raw.readyInMinutes,
+    likes: raw.aggregateLikes,
+    healthScore: raw.healthScore,
   };
 }
 
@@ -48,6 +51,7 @@ export async function searchRecipes(opts: {
     ...(opts.cuisine ? { cuisine: opts.cuisine } : {}),
     sort: 'max-used-ingredients',
     fillIngredients: true,
+    addRecipeInformation: true,
     ignorePantry: true,
     number: BATCH_SIZE,
     offset: opts.offset,

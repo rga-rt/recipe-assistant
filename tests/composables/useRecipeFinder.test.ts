@@ -38,6 +38,7 @@ function reset() {
   const f = useRecipeFinder();
   f.clear();
   f.cuisine.value = null;
+  f.sort.value = 'best';
   calls.length = 0;
   return f;
 }
@@ -219,5 +220,19 @@ describe('useRecipeFinder', () => {
     await f.showMore();
     expect(f.hasMore.value).toBe(false);
     expect(f.visible.value).toHaveLength(100);
+  });
+
+  it('applies the chosen sort to loaded recipes without refetching', async () => {
+    pages = { '0': { total: 3, recipes: [
+      { id: 1, title: 'A', image: '', usedCount: 1, missedCount: 0, readyInMinutes: 60 },
+      { id: 2, title: 'B', image: '', usedCount: 1, missedCount: 0, readyInMinutes: 15 },
+      { id: 3, title: 'C', image: '', usedCount: 1, missedCount: 0, readyInMinutes: 30 },
+    ] } };
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    f.sort.value = 'quickest';
+    expect(f.visible.value.map((r) => r.id)).toEqual([2, 3, 1]);
+    expect(calls).toHaveLength(1);
   });
 });
