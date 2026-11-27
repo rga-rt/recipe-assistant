@@ -86,6 +86,9 @@ describe('RecipeResults', () => {
     ];
     const wrapper = await mountSuspended(RecipeResults);
     const select = wrapper.find('[data-test="sort-select"]');
+    // Native arrow is hidden in favour of the app's own chevron.
+    expect(select.classes()).toContain('appearance-none');
+    expect(wrapper.find('[data-test="sort-chevron"]').exists()).toBe(true);
     expect(select.findAll('option').map((o) => o.attributes('value'))).toEqual([
       'best', 'fewest-missing', 'quickest', 'popular', 'healthiest',
     ]);

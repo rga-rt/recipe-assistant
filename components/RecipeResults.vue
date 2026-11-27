@@ -13,13 +13,25 @@
         </p>
         <label class="flex items-center gap-2 text-sm text-stone-600">
           <span class="whitespace-nowrap">{{ t('sort.label') }}</span>
-          <select
-            v-model="sort"
-            data-test="sort-select"
-            class="rounded-full border border-stone-300 bg-chalk py-1.5 pl-3 pr-8 text-sm font-medium text-kale transition focus:border-basil focus:outline-none"
-          >
-            <option v-for="s in RECIPE_SORTS" :key="s" :value="s">{{ t(`sort.options.${s}`) }}</option>
-          </select>
+          <span class="relative inline-flex">
+            <select
+              v-model="sort"
+              data-test="sort-select"
+              class="appearance-none rounded-full border border-stone-300 bg-chalk py-1.5 pl-3.5 pr-9 text-sm font-medium text-kale transition hover:border-basil focus:border-basil focus:outline-none"
+            >
+              <option v-for="s in RECIPE_SORTS" :key="s" :value="s">{{ t(`sort.options.${s}`) }}</option>
+            </select>
+            <!-- Custom chevron replaces the browser's native arrow. -->
+            <svg
+              data-test="sort-chevron"
+              class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-basil"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
         </label>
       </div>
     </div>
