@@ -57,12 +57,14 @@ export async function searchRecipes(opts: {
     $fetch<any>(`${BASE}/recipes/complexSearch`, { query });
 
   let data = await call(base);
-  // Spoonacular quirk: some small cuisine queries return nothing when sorted
-  // by max-used-ingredients but do return matches unsorted.
+  // Spoonacular quirk: some small cuisine queries (e.g. thai + chicken) return
+  // nothing when either `sort` or `fillIngredients` is set, but do match without
+  // both. The fallback loses used/missed counts (mapped to 0 = unknown).
   if (opts.offset === 0 && !(data?.results?.length)) {
-    const { sort: _sort, ...unsorted } = base;
+    const { sort: _sort, fillIngredients: _fill, ...plain } = base;
     void _sort;
-    data = await call(unsorted);
+    void _fill;
+    data = await call(plain);
   }
   return {
     total: data?.totalResults ?? 0,

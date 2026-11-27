@@ -48,13 +48,14 @@ describe('searchRecipes', () => {
     });
   });
 
-  it('retries without sort when the first batch is empty', async () => {
+  it('retries without sort and fillIngredients when the first batch is empty', async () => {
     fetchMock
       .mockResolvedValueOnce({ totalResults: 0, results: [] })
       .mockResolvedValueOnce({ totalResults: 3, results: [raw] });
     const page = await searchRecipes({ ingredients: ['chicken'], cuisine: 'thai', offset: 0, apiKey: 'K' });
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect((fetchMock.mock.calls[1][1] as any).query).not.toHaveProperty('sort');
+    expect((fetchMock.mock.calls[1][1] as any).query).not.toHaveProperty('fillIngredients');
     expect(page.recipes).toHaveLength(1);
     expect(page.total).toBe(3);
   });

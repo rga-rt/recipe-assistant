@@ -16,4 +16,9 @@ describe('RecipeCard', () => {
     const wrapper = await mountSuspended(RecipeCard, { props: { recipe, title: 'Sopa' } });
     expect(wrapper.text()).toContain('Sopa');
   });
+
+  it('hides the "uses" badge when the used count is unknown (0)', async () => {
+    const wrapper = await mountSuspended(RecipeCard, { props: { recipe: { ...recipe, usedCount: 0, missedCount: 0 } } });
+    expect(wrapper.text()).not.toContain('Uses');
+  });
 });

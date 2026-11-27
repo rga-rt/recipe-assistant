@@ -77,6 +77,14 @@ describe('GET /api/ingredients/resolve', () => {
     expect(hoisted.fetchMock.mock.calls[0][1].query.query).toBe('nopal');
   });
 
+  it('es: retries autocomplete with the original word when the translation finds nothing', async () => {
+    hoisted.translateMock.mockResolvedValue(['prickly pear cactus']);
+    hoisted.fetchMock.mockResolvedValueOnce([]).mockResolvedValueOnce([{ name: 'nopales' }]);
+    const res = await handler(q({ q: 'nopal', locale: 'es' }));
+    expect(res).toEqual({ token: 'nopales' });
+    expect(hoisted.fetchMock.mock.calls.map((c: any) => c[1].query.query)).toEqual(['prickly pear cactus', 'nopal']);
+  });
+
   it('en: skips translation', async () => {
     hoisted.fetchMock.mockResolvedValue([{ name: 'fish sauce' }]);
     const res = await handler(q({ q: 'Fish sauce', locale: 'en' }));

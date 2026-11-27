@@ -34,7 +34,11 @@ export default defineEventHandler(async (event) => {
 
   let token: string | null;
   try {
-    token = await autocompleteIngredient(query, useRuntimeConfig().spoonacularApiKey);
+    const apiKey = useRuntimeConfig().spoonacularApiKey;
+    token = await autocompleteIngredient(query, apiKey);
+    // MT can over-expand words Spoonacular already knows ("nopal" → "prickly pear
+    // cactus"), so fall back to the word as typed.
+    if (!token && query !== text) token = await autocompleteIngredient(text, apiKey);
   } catch (err: any) {
     const status = err?.response?.status ?? err?.statusCode;
     throw createError({ statusCode: status === 402 ? 402 : 502, statusMessage: status === 402 ? 'quota' : 'upstream error' });
