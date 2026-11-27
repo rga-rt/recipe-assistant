@@ -1,7 +1,12 @@
 <template>
   <div class="container mx-auto px-4 py-10">
     <div class="mb-8 flex items-center justify-between">
-      <h2 class="text-2xl font-bold text-kale sm:text-3xl">{{ t('results.title') }}</h2>
+      <div>
+        <h2 class="text-2xl font-bold text-kale sm:text-3xl">{{ t('results.title') }}</h2>
+        <p v-if="!pending && !error && results.length" class="num mt-1 text-sm text-stone-500" data-test="results-count">
+          {{ t('results.count', { count: total.toLocaleString(locale) }, total) }}
+        </p>
+      </div>
       <button class="rounded-full px-3 py-1.5 text-sm font-medium text-stone-600 transition hover:bg-stone-100" @click="goSelect">
         {{ t('results.newSearch') }}
       </button>
@@ -34,24 +39,39 @@
     <div v-else-if="results.length === 0" class="mx-auto max-w-md rounded-2xl border border-stone-200 bg-chalk p-8 text-center shadow-card">
       <p class="text-stone-600">{{ t('results.empty') }}</p>
     </div>
-    <div v-else class="grid animate-fade-rise gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      <RecipeCard
-        v-for="(r, i) in results"
-        :key="r.id"
-        :recipe="r"
-        :title="titles[i]"
-      />
-    </div>
+    <template v-else>
+      <div class="grid animate-fade-rise gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <RecipeCard
+          v-for="(r, i) in visible"
+          :key="r.id"
+          :recipe="r"
+          :title="titles[i]"
+        />
+      </div>
+      <div v-if="hasMore" class="mt-10 flex justify-center">
+        <button
+          data-test="show-more"
+          class="rounded-full border border-basil px-6 py-2.5 text-sm font-semibold text-basil transition hover:bg-basil hover:text-chalk disabled:cursor-wait disabled:opacity-60"
+          :disabled="loadingMore"
+          @click="showMore"
+        >
+          {{ loadingMore ? t('results.loading') : t('results.showMore') }}
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n();
-const { results, pending, error, goSelect, fetchRecipes } = useRecipeFinder();
+const { t, locale } = useI18n();
+const { results, visible, total, hasMore, pending, loadingMore, error, goSelect, fetchRecipes, showMore } =
+  useRecipeFinder();
 const { translate } = useTranslate();
 
 const titles = ref<string[]>([]);
 watchEffect(async () => {
-  titles.value = await translate(results.value.map((r) => r.title));
+  // Only visible cards are translated, so loading a 100-recipe batch doesn't
+  // send 100 titles to the translation service.
+  titles.value = await translate(visible.value.map((r) => r.title));
 });
 </script>

@@ -28,7 +28,9 @@
     "missingCount": "{count} more needed",
     "empty": "No recipes found. Try different or fewer ingredients.",
     "loading": "Finding recipes…",
-    "newSearch": "New search"
+    "newSearch": "New search",
+    "count": "{count} recipe found | {count} recipes found",
+    "showMore": "Show more"
   },
   "recipe": {
     "readyIn": "Ready in {minutes} min",

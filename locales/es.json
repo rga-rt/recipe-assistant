@@ -28,7 +28,9 @@
     "missingCount": "{count} más necesarios",
     "empty": "No se encontraron recetas. Prueba con otros o menos ingredientes.",
     "loading": "Buscando recetas…",
-    "newSearch": "Nueva búsqueda"
+    "newSearch": "Nueva búsqueda",
+    "count": "{count} receta encontrada | {count} recetas encontradas",
+    "showMore": "Ver más"
   },
   "recipe": {
     "readyIn": "Listo en {minutes} min",

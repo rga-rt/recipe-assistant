@@ -1,35 +1,117 @@
 // @vitest-environment nuxt
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept to match brief's test verbatim
 import { describe, it, expect, beforeEach } from 'vitest';
 import { registerEndpoint } from '@nuxt/test-utils/runtime';
+import { getQuery } from 'h3';
 import { useRecipeFinder } from '~/composables/useRecipeFinder';
+import type { RecipeSearchPage, RecipeSummary } from '~/types/recipe';
+
+const recipes = (from: number, n: number): RecipeSummary[] =>
+  Array.from({ length: n }, (_, i) => ({ id: from + i, title: `R${from + i}`, image: 'i', usedCount: 1, missedCount: 0 }));
+
+let pages: Record<string, RecipeSearchPage> = {};
+const calls: Record<string, string>[] = [];
 
 registerEndpoint('/api/recipes/by-ingredients', {
   method: 'GET',
-  handler: () => [
-    { id: 1, title: 'A', image: 'i', usedCount: 2, missedCount: 0 },
-    { id: 2, title: 'B', image: 'i', usedCount: 1, missedCount: 1 },
-  ],
+  handler: (event) => {
+    const q = getQuery(event) as Record<string, string>;
+    calls.push(q);
+    return pages[q.batch ?? '0'];
+  },
 });
 
+function reset() {
+  const f = useRecipeFinder();
+  f.clear();
+  f.cuisine.value = null;
+  calls.length = 0;
+  return f;
+}
+
 describe('useRecipeFinder', () => {
+  beforeEach(() => {
+    pages = { '0': { total: 2, recipes: recipes(1, 2) } };
+  });
+
   it('toggles selection and disallows duplicates', () => {
-    const f = useRecipeFinder();
-    f.clear();
+    const f = reset();
     f.toggle('egg');
     f.toggle('rice');
-    f.toggle('egg'); // removes egg
+    f.toggle('egg');
     expect(f.selected.value).toEqual(['rice']);
     expect(f.isSelected('rice')).toBe(true);
   });
 
   it('fetchRecipes fills results and moves to results step', async () => {
-    const f = useRecipeFinder();
-    f.clear();
+    const f = reset();
     f.toggle('egg');
     await f.fetchRecipes();
     expect(f.results.value.length).toBe(2);
     expect(f.step.value).toBe('results');
     expect(f.error.value).toBeNull();
+  });
+
+  it('stores total and resets paging to the first 24', async () => {
+    pages = { '0': { total: 300, recipes: recipes(0, 100) } };
+    const f = reset();
+    f.toggle('egg');
+    f.visibleCount.value = 96;
+    await f.fetchRecipes();
+    expect(f.total.value).toBe(300);
+    expect(f.visible.value).toHaveLength(24);
+    expect(f.hasMore.value).toBe(true);
+  });
+
+  it('sends cuisine only when set', async () => {
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    expect(calls[0]).not.toHaveProperty('cuisine');
+    f.cuisine.value = 'thai';
+    await f.fetchRecipes();
+    expect(calls[1].cuisine).toBe('thai');
+  });
+
+  it('showMore reveals loaded recipes without fetching', async () => {
+    pages = { '0': { total: 300, recipes: recipes(0, 100) } };
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    await f.showMore();
+    expect(f.visible.value).toHaveLength(48);
+    expect(calls).toHaveLength(1);
+  });
+
+  it('showMore fetches the next batch when loaded recipes run out, deduping ids', async () => {
+    pages = {
+      '0': { total: 300, recipes: recipes(0, 100) },
+      '1': { total: 300, recipes: [...recipes(99, 1), ...recipes(100, 99)] },
+    };
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    f.visibleCount.value = 96;
+    await f.showMore();
+    expect(calls[1].batch).toBe('1');
+    expect(f.results.value).toHaveLength(199);
+    expect(f.visible.value).toHaveLength(120);
+  });
+
+  it('hasMore is false when everything available is visible', async () => {
+    pages = { '0': { total: 30, recipes: recipes(0, 30) } };
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    await f.showMore();
+    expect(f.visible.value).toHaveLength(30);
+    expect(f.hasMore.value).toBe(false);
+  });
+
+  it('hasMore is false once 1000 recipes are loaded and shown', async () => {
+    const f = reset();
+    f.results.value = recipes(0, 1000);
+    f.total.value = 2304;
+    f.visibleCount.value = 1000;
+    expect(f.hasMore.value).toBe(false);
   });
 });
