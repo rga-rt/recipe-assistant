@@ -19,6 +19,10 @@ export function useRecipeFinder() {
   const pending = useState<boolean>('finder-pending', () => false);
   const loadingMore = useState<boolean>('finder-loading-more', () => false);
   const error = useState<'quota' | 'generic' | null>('finder-error', () => null);
+  // Errors from "Show more" are kept apart so a failed page doesn't hide loaded results.
+  const loadMoreError = useState<'quota' | 'generic' | null>('finder-load-more-error', () => null);
+  // Bumped on every new search; a "Show more" response from an older search is dropped.
+  const generation = useState<number>('finder-generation', () => 0);
 
   const available = computed(() => Math.min(total.value, MAX_RECIPES));
   const visible = computed(() => rankPages(results.value).slice(0, visibleCount.value));
@@ -84,10 +88,14 @@ export function useRecipeFinder() {
 
   async function fetchRecipes() {
     if (selected.value.length === 0) return;
+    const gen = ++generation.value;
     pending.value = true;
     error.value = null;
+    loadMoreError.value = null;
+    loadingMore.value = false;
     try {
       const page = await fetchPage(0);
+      if (gen !== generation.value) return;
       results.value = page.recipes;
       total.value = page.total;
       batch.value = 0;
@@ -105,17 +113,24 @@ export function useRecipeFinder() {
     const needsFetch =
       visibleCount.value + PAGE_SIZE > results.value.length && results.value.length < available.value;
     if (needsFetch) {
+      const gen = generation.value;
       loadingMore.value = true;
+      loadMoreError.value = null;
       try {
         const page = await fetchPage(batch.value + 1);
+        if (gen !== generation.value) return;
         const seen = new Set(results.value.map((r) => r.id));
-        results.value = [...results.value, ...page.recipes.filter((r) => !seen.has(r.id))];
+        const fresh = page.recipes.filter((r) => !seen.has(r.id));
+        results.value = [...results.value, ...fresh];
         batch.value += 1;
+        // Spoonacular's totalResults can overstate what it returns; stop paging
+        // instead of spending quota on batches that add nothing.
+        if (fresh.length === 0) total.value = results.value.length;
       } catch (err) {
-        error.value = toError(err);
+        if (gen === generation.value) loadMoreError.value = toError(err);
         return;
       } finally {
-        loadingMore.value = false;
+        if (gen === generation.value) loadingMore.value = false;
       }
     }
     visibleCount.value += PAGE_SIZE;
@@ -127,7 +142,7 @@ export function useRecipeFinder() {
   }
 
   return {
-    step, selected, cuisine, customLabels, results, total, visibleCount, visible, hasMore, pending, loadingMore, error,
+    step, selected, cuisine, customLabels, results, total, visibleCount, visible, hasMore, pending, loadingMore, error, loadMoreError,
     isSelected, toggle, clear, addCustom, goStart, goSelect, fetchRecipes, showMore, searchAllCuisines,
   };
 }

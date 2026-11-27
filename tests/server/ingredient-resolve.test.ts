@@ -77,6 +77,13 @@ describe('GET /api/ingredients/resolve', () => {
     expect(hoisted.fetchMock.mock.calls[0][1].query.query).toBe('nopal');
   });
 
+  it('es: does not cache a result built on a failed translation', async () => {
+    hoisted.translateMock.mockResolvedValue([null]);
+    hoisted.fetchMock.mockResolvedValue([]);
+    await expect(handler(q({ q: 'xoconostle', locale: 'es' }))).rejects.toMatchObject({ statusCode: 404 });
+    expect(hoistedCache.cache.set).not.toHaveBeenCalled();
+  });
+
   it('es: retries autocomplete with the original word when the translation finds nothing', async () => {
     hoisted.translateMock.mockResolvedValue(['prickly pear cactus']);
     hoisted.fetchMock.mockResolvedValueOnce([]).mockResolvedValueOnce([{ name: 'nopales' }]);

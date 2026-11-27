@@ -19,6 +19,7 @@ function setState(n: number, total: number) {
   f.results.value = recipes(n);
   f.total.value = total;
   f.visibleCount.value = 24;
+  f.loadMoreError.value = null;
   return f;
 }
 
@@ -65,5 +66,14 @@ describe('RecipeResults', () => {
     const wrapper = await mountSuspended(RecipeResults);
     expect(wrapper.text()).toContain('No recipes found');
     expect(wrapper.find('[data-test="try-all"]').exists()).toBe(false);
+  });
+
+  it('keeps the grid and shows the error next to Show more when loading more fails', async () => {
+    const f = setState(100, 300);
+    f.loadMoreError.value = 'generic';
+    const wrapper = await mountSuspended(RecipeResults);
+    expect(wrapper.findAll('a[href*="/recipe/"]')).toHaveLength(24);
+    expect(wrapper.find('[data-test="load-more-error"]').text()).toContain('Something went wrong');
+    expect(wrapper.find('[data-test="show-more"]').exists()).toBe(true);
   });
 });

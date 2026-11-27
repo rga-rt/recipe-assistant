@@ -9,14 +9,18 @@ const recipes = (from: number, n: number): RecipeSummary[] =>
   Array.from({ length: n }, (_, i) => ({ id: from + i, title: `R${from + i}`, image: 'i', usedCount: 1, missedCount: 0 }));
 
 let pages: Record<string, RecipeSearchPage> = {};
+let slowBatch1 = false;
 const calls: Record<string, string>[] = [];
 
 registerEndpoint('/api/recipes/by-ingredients', {
   method: 'GET',
-  handler: (event) => {
+  handler: async (event) => {
     const q = getQuery(event) as Record<string, string>;
     calls.push(q);
-    return pages[q.batch ?? '0'];
+    if (q.batch === '1' && slowBatch1) await new Promise((r) => setTimeout(r, 50));
+    const page = pages[q.batch ?? '0'];
+    if (!page) throw createError({ statusCode: 502, statusMessage: 'upstream error' });
+    return page;
   },
 });
 
@@ -40,6 +44,7 @@ function reset() {
 
 describe('useRecipeFinder', () => {
   beforeEach(() => {
+    slowBatch1 = false;
     pages = { '0': { total: 2, recipes: recipes(1, 2) } };
   });
 
@@ -169,5 +174,50 @@ describe('useRecipeFinder', () => {
     await f.addCustom('nopal', 'es');
     f.clear();
     expect(f.customLabels.value).toEqual({});
+  });
+
+  it('a failed showMore keeps loaded results and reports a separate error', async () => {
+    pages = { '0': { total: 300, recipes: recipes(0, 100) } }; // batch 1 missing → 502
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    f.visibleCount.value = 96;
+    await f.showMore();
+    expect(f.error.value).toBeNull();
+    expect(f.loadMoreError.value).toBe('generic');
+    expect(f.visible.value).toHaveLength(96);
+  });
+
+  it('drops a showMore response that arrives after a new search started', async () => {
+    slowBatch1 = true;
+    pages = {
+      '0': { total: 300, recipes: recipes(0, 100) },
+      '1': { total: 300, recipes: recipes(100, 100) },
+    };
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    f.visibleCount.value = 96;
+    const pendingMore = f.showMore();
+    pages['0'] = { total: 5, recipes: recipes(500, 5) };
+    await f.fetchRecipes();
+    await pendingMore;
+    expect(f.results.value.map((r) => r.id)).toEqual([500, 501, 502, 503, 504]);
+    expect(f.visible.value).toHaveLength(5);
+    expect(f.loadingMore.value).toBe(false);
+  });
+
+  it('stops paging when a fetched batch adds no new recipes', async () => {
+    pages = {
+      '0': { total: 300, recipes: recipes(0, 100) },
+      '1': { total: 300, recipes: [] },
+    };
+    const f = reset();
+    f.toggle('egg');
+    await f.fetchRecipes();
+    f.visibleCount.value = 96;
+    await f.showMore();
+    expect(f.hasMore.value).toBe(false);
+    expect(f.visible.value).toHaveLength(100);
   });
 });

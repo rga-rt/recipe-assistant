@@ -58,7 +58,10 @@
           :title="titles[i]"
         />
       </div>
-      <div v-if="hasMore" class="mt-10 flex justify-center">
+      <div v-if="hasMore" class="mt-10 flex flex-col items-center gap-3">
+        <p v-if="loadMoreError" data-test="load-more-error" class="text-sm text-tomato" role="status">
+          {{ loadMoreError === 'quota' ? t('errors.quota') : t('errors.generic') }}
+        </p>
         <button
           data-test="show-more"
           class="rounded-full border border-basil px-6 py-2.5 text-sm font-semibold text-basil transition hover:bg-basil hover:text-chalk disabled:cursor-wait disabled:opacity-60"
@@ -75,7 +78,7 @@
 <script setup lang="ts">
 const { t, locale } = useI18n();
 const {
-  results, visible, total, hasMore, pending, loadingMore, error, cuisine,
+  results, visible, total, hasMore, pending, loadingMore, error, loadMoreError, cuisine,
   goSelect, fetchRecipes, showMore, searchAllCuisines,
 } = useRecipeFinder();
 const cuisineLabel = computed(() =>

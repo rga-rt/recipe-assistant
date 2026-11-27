@@ -26,10 +26,14 @@ export default defineEventHandler(async (event) => {
   }
 
   let query = text;
+  // A failed translation must not be cached (see TranslationProvider), and neither
+  // may a result built on the untranslated word: an outage would stick for 30 days.
+  let cacheable = true;
   if (lang === 'es') {
     const provider = createMyMemoryProvider(useRuntimeConfig().myMemoryEmail || undefined);
     const [translated] = await provider.translate([text], 'en');
     if (translated) query = translated;
+    else cacheable = false;
   }
 
   let token: string | null;
@@ -44,7 +48,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: status === 402 ? 402 : 502, statusMessage: status === 402 ? 'quota' : 'upstream error' });
   }
 
-  await cache.set(key, { token }, TTL_MS);
+  if (cacheable) await cache.set(key, { token }, TTL_MS);
   if (!token) throw createError({ statusCode: 404, statusMessage: 'not_found' });
   return { token };
 });
