@@ -70,6 +70,13 @@ export async function searchRecipes(opts: {
   };
 }
 
+export async function autocompleteIngredient(query: string, apiKey: string): Promise<string | null> {
+  const data = await $fetch<any[]>(`${BASE}/food/ingredients/autocomplete`, {
+    query: { query, number: 1, apiKey },
+  });
+  return data?.[0]?.name ?? null;
+}
+
 export async function getRecipe(id: number, apiKey: string): Promise<RecipeDetail> {
   const data = await $fetch<any>(`${BASE}/recipes/${id}/information`, {
     query: { includeNutrition: false, apiKey },

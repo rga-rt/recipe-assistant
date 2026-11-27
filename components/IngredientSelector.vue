@@ -81,6 +81,7 @@
 <script setup lang="ts">
 import { INGREDIENT_CATEGORIES } from '~/data/ingredients';
 import { CUISINES } from '~/data/cuisines';
+import { normalizeIngredient as norm } from '~/utils/catalogMatch';
 import type { CatalogIngredient } from '~/types/recipe';
 
 const { t, locale } = useI18n();
@@ -96,12 +97,6 @@ const cuisineOptions = computed(() =>
     .sort((a, b) => a.label.localeCompare(b.label, locale.value)),
 );
 const query = ref('');
-
-const norm = (s: string) =>
-  s
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase();
 
 const filteredCategories = computed(() => {
   const q = norm(query.value.trim());
