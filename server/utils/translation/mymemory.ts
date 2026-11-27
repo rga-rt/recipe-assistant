@@ -13,7 +13,7 @@ export function createMyMemoryProvider(email?: string): TranslationProvider {
           if (!q.trim()) return q;
           try {
             const res = await $fetch<MyMemoryResponse>('https://api.mymemory.translated.net/get', {
-              query: { q, langpair: `en|${target}`, ...(email ? { de: email } : {}) },
+              query: { q, langpair: target === 'en' ? 'es|en' : 'en|es', ...(email ? { de: email } : {}) },
             });
             const t = res?.responseData?.translatedText;
             if (Number(res?.responseStatus) === 200 && typeof t === 'string' && t.length) {

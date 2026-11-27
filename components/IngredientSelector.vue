@@ -10,7 +10,19 @@
         type="search"
         :placeholder="t('select.search')"
         class="w-full rounded-full border border-stone-300 bg-chalk px-4 py-2.5 text-sm text-kale transition placeholder:text-stone-400 focus:border-basil focus:outline-none"
+        @keydown.enter.prevent="addTyped"
       >
+      <button
+        v-if="canAdd"
+        data-test="add-custom"
+        class="mt-2 inline-flex items-center gap-2 rounded-full border border-basil px-4 py-1.5 text-sm font-medium text-basil transition hover:bg-basil hover:text-chalk disabled:cursor-wait disabled:opacity-60"
+        :disabled="adding"
+        @click="addTyped"
+      >
+        <span v-if="adding" aria-hidden="true" class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+        {{ t('select.add', { name: query.trim() }) }}
+      </button>
+      <p v-if="addMessage" class="mt-2 text-sm text-tomato" role="status">{{ addMessage }}</p>
     </div>
 
     <div class="mt-6">
@@ -46,7 +58,17 @@
           <span class="num text-sm font-medium text-kale">{{
             t('select.selectedCount', { count: selected.length }, selected.length)
           }}</span>
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
+            <label class="sr-only" for="cuisine-select">{{ t('cuisine.label') }}</label>
+            <select
+              id="cuisine-select"
+              v-model="cuisineModel"
+              data-test="cuisine-select"
+              class="max-w-[9.5rem] rounded-full border border-stone-300 bg-chalk px-3 py-2 text-sm text-kale transition focus:border-basil focus:outline-none sm:max-w-none"
+            >
+              <option value="">{{ t('cuisine.all') }}</option>
+              <option v-for="c in cuisineOptions" :key="c.value" :value="c.value">{{ c.label }}</option>
+            </select>
             <button
               class="rounded-full px-4 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100"
               @click="clear"
@@ -70,17 +92,48 @@
 
 <script setup lang="ts">
 import { INGREDIENT_CATEGORIES } from '~/data/ingredients';
+import { CUISINES } from '~/data/cuisines';
+import { normalizeIngredient as norm, matchCatalog } from '~/utils/catalogMatch';
 import type { CatalogIngredient } from '~/types/recipe';
 
 const { t, locale } = useI18n();
-const { selected, pending, clear, fetchRecipes, toggle } = useRecipeFinder();
-const query = ref('');
+const { selected, cuisine, customLabels, pending, clear, fetchRecipes, toggle, addCustom } = useRecipeFinder();
 
-const norm = (s: string) =>
-  s
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase();
+const query = ref('');
+const adding = ref(false);
+const addMessage = ref('');
+watch(query, () => { addMessage.value = ''; });
+const canAdd = computed(() => {
+  const text = query.value.trim();
+  return text.length > 0 && !matchCatalog(text);
+});
+
+async function addTyped() {
+  if (!canAdd.value || adding.value) return;
+  const name = query.value.trim();
+  adding.value = true;
+  const result = await addCustom(name, locale.value === 'es' ? 'es' : 'en');
+  adding.value = false;
+  if (result === 'added') {
+    query.value = '';
+    return;
+  }
+  addMessage.value =
+    result === 'duplicate' ? t('select.alreadyAdded', { name })
+    : result === 'not_found' ? t('select.notFound', { name })
+    : result === 'quota' ? t('errors.quota')
+    : t('errors.generic');
+}
+
+// '' in the <select> means All (stored as null).
+const cuisineModel = computed({
+  get: () => cuisine.value ?? '',
+  set: (v: string) => { cuisine.value = v || null; },
+});
+const cuisineOptions = computed(() =>
+  CUISINES.map((value) => ({ value, label: t(`cuisine.options.${value.replace(/ /g, '_')}`) }))
+    .sort((a, b) => a.label.localeCompare(b.label, locale.value)),
+);
 
 const filteredCategories = computed(() => {
   const q = norm(query.value.trim());
@@ -98,7 +151,11 @@ const labelMap: Record<string, CatalogIngredient> = Object.fromEntries(
 );
 function labelFor(token: string): string {
   const ing = labelMap[token];
-  if (!ing) return token;
+  if (!ing) {
+    const typed = customLabels.value[token];
+    if (!typed || norm(typed) === norm(token)) return typed ?? token;
+    return `${typed} → ${token}`;
+  }
   return locale.value === 'es' ? ing.es : ing.en;
 }
 </script>

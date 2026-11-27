@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- mappers normalize untyped upstream Spoonacular JSON */
-import type { RecipeSummary, RecipeDetail, Measure } from '~/types/recipe';
+import type { RecipeSummary, RecipeDetail, Measure, RecipeSearchPage } from '~/types/recipe';
 
 const BASE = 'https://api.spoonacular.com';
 
@@ -35,11 +35,48 @@ export function mapDetail(raw: any): RecipeDetail {
   };
 }
 
-export async function findByIngredients(ingredients: string[], apiKey: string): Promise<RecipeSummary[]> {
-  const data = await $fetch<any[]>(`${BASE}/recipes/findByIngredients`, {
-    query: { ingredients: ingredients.join(','), number: 24, ranking: 1, ignorePantry: true, apiKey },
+export const BATCH_SIZE = 100;
+
+export async function searchRecipes(opts: {
+  ingredients: string[];
+  cuisine?: string;
+  offset: number;
+  apiKey: string;
+}): Promise<RecipeSearchPage> {
+  const base: Record<string, unknown> = {
+    includeIngredients: opts.ingredients.join(','),
+    ...(opts.cuisine ? { cuisine: opts.cuisine } : {}),
+    sort: 'max-used-ingredients',
+    fillIngredients: true,
+    ignorePantry: true,
+    number: BATCH_SIZE,
+    offset: opts.offset,
+    apiKey: opts.apiKey,
+  };
+  const call = (query: Record<string, unknown>) =>
+    $fetch<any>(`${BASE}/recipes/complexSearch`, { query });
+
+  let data = await call(base);
+  // Spoonacular quirk: some small cuisine queries (e.g. thai + chicken) return
+  // nothing when either `sort` or `fillIngredients` is set, but do match without
+  // both. The fallback loses used/missed counts (mapped to 0 = unknown).
+  if (opts.offset === 0 && !(data?.results?.length)) {
+    const { sort: _sort, fillIngredients: _fill, ...plain } = base;
+    void _sort;
+    void _fill;
+    data = await call(plain);
+  }
+  return {
+    total: data?.totalResults ?? 0,
+    recipes: (data?.results ?? []).map(mapSummary),
+  };
+}
+
+export async function autocompleteIngredient(query: string, apiKey: string): Promise<string | null> {
+  const data = await $fetch<any[]>(`${BASE}/food/ingredients/autocomplete`, {
+    query: { query, number: 1, apiKey },
   });
-  return data.map(mapSummary);
+  return data?.[0]?.name ?? null;
 }
 
 export async function getRecipe(id: number, apiKey: string): Promise<RecipeDetail> {

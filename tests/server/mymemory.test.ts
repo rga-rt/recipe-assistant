@@ -11,7 +11,7 @@ vi.stubGlobal('$fetch', hoisted.fetchMock);
 // evaluation precedes the importing module's own top-level statements). A
 // dynamic import() inside beforeAll defers loading the module until after
 // the stub is in place. See tests/server/by-ingredients.test.ts.
-let createMyMemoryProvider: (email?: string) => { translate: (texts: string[], target: 'es') => Promise<(string | null)[]> };
+let createMyMemoryProvider: (email?: string) => { translate: (texts: string[], target: 'es' | 'en') => Promise<(string | null)[]> };
 
 beforeAll(async () => {
   ({ createMyMemoryProvider } = await import('~/server/utils/translation/mymemory'));
@@ -58,5 +58,18 @@ describe('createMyMemoryProvider', () => {
     const res = await provider.translate(['   '], 'es');
     expect(res).toEqual(['   ']);
     expect(hoisted.fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('uses the en|es langpair when translating to Spanish', async () => {
+    hoisted.fetchMock.mockResolvedValue({ responseStatus: 200, responseData: { translatedText: 'Arroz' } });
+    await createMyMemoryProvider().translate(['Rice'], 'es');
+    expect(hoisted.fetchMock.mock.calls[0][1].query.langpair).toBe('en|es');
+  });
+
+  it('uses the es|en langpair when translating to English', async () => {
+    hoisted.fetchMock.mockResolvedValue({ responseStatus: 200, responseData: { translatedText: 'cactus' } });
+    const res = await createMyMemoryProvider().translate(['nopal'], 'en');
+    expect(hoisted.fetchMock.mock.calls[0][1].query.langpair).toBe('es|en');
+    expect(res).toEqual(['cactus']);
   });
 });
